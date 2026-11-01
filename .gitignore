@@ -23,7 +23,7 @@ yarn-error.log*
 .vercel/
 
 # Raw unorganized source images folder (curated images live in assets/images/)
-images/
+/images/
 
 # Environment & Temporary Files
 .env
