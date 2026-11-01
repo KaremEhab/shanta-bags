@@ -1,0 +1,237 @@
+/**
+ * Shanta (شنطة) — Luxury Handmade Bag Boutique
+ * Product Catalog & Store Configuration Data
+ */
+
+const STORE_CONFIG = {
+  brandName: "شنطة",
+  brandNameEn: "Shanta",
+  whatsappNumber: "201505765917",
+  uniformPrice: 650,
+  uniformPriceFormatted: "٦٥٠ ج.م",
+  currency: "ج.م",
+  categories: [
+    { id: "all", label: "الكل" },
+    { id: "كلاسيك وسهرة", label: "كلاسيك وسهرة" },
+    { id: "ألوان ناعمة", label: "ألوان ناعمة" },
+    { id: "موديلات طولية", label: "موديلات طولية" }
+  ]
+};
+
+/**
+ * 10 Curated Handmade Bags
+ * Identified strictly by catalog codes: "شنطة كود #01" through "شنطة كود #10"
+ * Uniform pricing: 650 EGP across all items
+ */
+const BAGS_DATA = [
+  {
+    id: 1,
+    code: "شنطة كود #01",
+    codeBadge: "#01",
+    category: "كلاسيك وسهرة",
+    color: "أسود ملكي بتطريز فضي",
+    colorHex: "#1C1C1E",
+    price: 650,
+    priceFormatted: "٦٥٠ ج.م",
+    image: "assets/images/bag-01.jpg",
+    fallbackImage: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&w=1000&q=85",
+    shortDescription: "تصميم مسائي فاخر يجمع بين فخامة الأسود الملكي وخيوط الفضة اللامعة بغرزة الكافيار الدقيقة.",
+    specs: {
+      dimensions: "العرض ٢٤ سم × الارتفاع ١٤ سم × العمق ٦ سم",
+      yarnType: "خيط مكرمية كافيار فاخر عالي الكثافة مطعم بخيوط فضية ميتاليك لامعة وغرزة هندسية وسطية",
+      hardware: "قفل معدني مطروق (T-Bar) بطلاء فضي بلاتيني، حليات زوايا معدنية مزخرفة على القلاب، وسلسلة كتف مصقولة",
+      lining: "بطانة ستان فاخرة مع هيكل داخلي مقوى للحفاظ على ثبات القوام",
+      craftingHours: "٢٢ ساعة حياكة يدوية دقيقة"
+    },
+    highlights: ["تصميم سهرة حصري", "زوايا معدنية مزخرفة", "قوام هندسي متماسك"]
+  },
+  {
+    id: 2,
+    code: "شنطة كود #02",
+    codeBadge: "#02",
+    category: "كلاسيك وسهرة",
+    color: "أسود فحمي فاخر",
+    colorHex: "#141416",
+    price: 650,
+    priceFormatted: "٦٥٠ ج.م",
+    image: "assets/images/bag-02.jpg",
+    fallbackImage: "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?auto=format&fit=crop&w=1000&q=85",
+    shortDescription: "حقيبة كلاسيكية بمقبض علوي مجدول يدوياً وصفوف مائلة بارزة تعكس الحضور الكلاسيكي الخالص.",
+    specs: {
+      dimensions: "العرض ٢٣ سم × الارتفاع ١٥ سم × العمق ٧ سم",
+      yarnType: "خيط حرير مكرمية مصقول مشغول بصفوف مائلة تفصلها ضفائر بارزة مع مقبض علوي مجدول بكثافة مضاعفة",
+      hardware: "قفل درع ذهبي مطروق دوّار، حلقات تثبيت ذهبية ثقيلة للمقبض، وسلسلة ذهبية متداخلة مع الخيط الأسود",
+      lining: "بطانة داخلية ناعمة بجيب مخصص للمقتنيات الصغيرة مع تدعيم كامل للقاعدة",
+      craftingHours: "٢٠ ساعة حياكة يدوية دقيقة"
+    },
+    highlights: ["مقبض علوي مجدول", "سلسلة متداخلة بالخيط", "قفل درع ذهبي"]
+  },
+  {
+    id: 3,
+    code: "شنطة كود #03",
+    codeBadge: "#03",
+    category: "كلاسيك وسهرة",
+    color: "بني شوكولاتة داكن",
+    colorHex: "#3D261C",
+    price: 650,
+    priceFormatted: "٦٥٠ ج.م",
+    image: "assets/images/bag-03.jpg",
+    fallbackImage: "https://images.unsplash.com/photo-1590874103328-eac38a683ce7?auto=format&fit=crop&w=1000&q=85",
+    shortDescription: "تناغم هندسي دافئ بلون الشوكولاتة الداكنة مع غرزة المربعات البارزة وحواف مجدولة بإتقان.",
+    specs: {
+      dimensions: "العرض ٢٢ سم × الارتفاع ١٥ سم × العمق ٧ سم",
+      yarnType: "خيط مكرمية قطني معالج ضد الوبر بغرزة الهندسة الرباعية البارزة (Chevron Grid) وحواف محددة بضفيرة متصلة",
+      hardware: "قفل ذهبي مسطح مطروق (T-Bar) غير قابل لتغير اللون مع سلسلة كتف ذهبية ذات حلقات مضلعة مسطحة",
+      lining: "بطانة قماشية سميكة بلون متناغم مع دعامات جانبية تحفظ الشكل المستطيل",
+      craftingHours: "١٩ ساعة حياكة يدوية دقيقة"
+    },
+    highlights: ["نقشة هندسية ثلاثية الأبعاد", "سلسلة مضلعة فاخرة", "ثبات لوني فائق"]
+  },
+  {
+    id: 4,
+    code: "شنطة كود #04",
+    codeBadge: "#04",
+    category: "كلاسيك وسهرة",
+    color: "أحمر ياقوتي بحواف قطيفة",
+    colorHex: "#7A1828",
+    price: 650,
+    priceFormatted: "٦٥٠ ج.م",
+    image: "assets/images/bag-04.jpg",
+    fallbackImage: "https://images.unsplash.com/photo-1566150905458-1bf1fc113f0d?auto=format&fit=crop&w=1000&q=85",
+    shortDescription: "إصدار مسائي آسر باللون الأحمر الياقوتي مؤطر بحواف من خيط القطيفة الناعم لإطلالة استثنائية.",
+    specs: {
+      dimensions: "العرض ٢٢ سم × الارتفاع ١٤ سم × العمق ٦ سم",
+      yarnType: "مزيج فاخر من خيط السلسلة الحريري اللامع في المتن مع تأطير جانبي بخيط الشانيل (القطيفة) البارز فائق النعومة",
+      hardware: "قفل ذهبي هندسي بلسان دوّار مطروق وحلقات تثبيت مخفية مع سلسلة كتف ذهبية لامعة",
+      lining: "بطانة داخلية ناعمة الملمس مع هيكل شبكي مقوى بالكامل",
+      craftingHours: "٢١ ساعة حياكة يدوية دقيقة"
+    },
+    highlights: ["تأطير قطيفة بارز", "لمعة حريرية غنية", "مثالية للمناسبات المسائية"]
+  },
+  {
+    id: 5,
+    code: "شنطة كود #05",
+    codeBadge: "#05",
+    category: "ألوان ناعمة",
+    color: "أوف وايت عاجي ناعم",
+    colorHex: "#F3EFE6",
+    price: 650,
+    priceFormatted: "٦٥٠ ج.م",
+    image: "assets/images/bag-05.jpg",
+    fallbackImage: "https://images.unsplash.com/photo-1591561954557-26941169b49e?auto=format&fit=crop&w=1000&q=85",
+    shortDescription: "نقاء اللون العاجي في تصميم هادئ بأعمدة مائلة وضفائر طولية بارزة تناسب الإطلالات الصباحية والمسائية.",
+    specs: {
+      dimensions: "العرض ٢٢ سم × الارتفاع ١٦ سم × العمق ٧ سم",
+      yarnType: "خيط قيطان حريري ناعم الملمس مشغول بأعمدة مائلة متوازية تفصلها جدائل طولية بارزة",
+      hardware: "قفل ذهبي شبه منحرف مطروق بآلية غلق محكمة، وسلسلة ذهبية مزدوجة مضفرة بالخيط العاجي لراحة الكتف",
+      lining: "بطانة قطنية ناعمة بلون أوف وايت مع تقوية شاملة للقلاب والقاعدة",
+      craftingHours: "١٨ ساعة حياكة يدوية دقيقة"
+    },
+    highlights: ["سلسلة مضفرة مريحة", "لون عاجي ناعم", "سعة داخلية عملية"]
+  },
+  {
+    id: 6,
+    code: "شنطة كود #06",
+    codeBadge: "#06",
+    category: "ألوان ناعمة",
+    color: "بيج رملي دافئ",
+    colorHex: "#D8C3A5",
+    price: 650,
+    priceFormatted: "٦٥٠ ج.م",
+    image: "assets/images/bag-06.jpg",
+    fallbackImage: "https://images.unsplash.com/photo-1594223274512-ad4803739b7c?auto=format&fit=crop&w=1000&q=85",
+    shortDescription: "حقيبة بدرجة البيج الرملي الدافئ تجمع بين الزخرفة الهندسية الوسطية وحليات الزوايا الذهبية الملكية.",
+    specs: {
+      dimensions: "العرض ٢١ سم × الارتفاع ١٤ سم × العمق ٦ سم",
+      yarnType: "خيط حرير مكرمية ناعم يدمج بين غرزة الساعة الرملية الهندسية في الوسط والأعمدة المائلة على الجوانب",
+      hardware: "قفل ضغط ذهبي مصقول، زوايا ذهبية معدنية مزخرفة لحماية وتجميل أطراف القلاب، وسلسلة مجدولة بالخيط",
+      lining: "بطانة داخلية متينة مع تدعيم يحفظ استقامة الحواف والزوايا",
+      craftingHours: "٢٠ ساعة حياكة يدوية دقيقة"
+    },
+    highlights: ["حليات زوايا ذهبية", "غرزة مزدوجة النقش", "درجة بيج متناسقة"]
+  },
+  {
+    id: 7,
+    code: "شنطة كود #07",
+    codeBadge: "#07",
+    category: "ألوان ناعمة",
+    color: "كشمير وردي هادئ",
+    colorHex: "#C9969B",
+    price: 650,
+    priceFormatted: "٦٥٠ ج.م",
+    image: "assets/images/bag-07.jpg",
+    fallbackImage: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&w=1000&q=85",
+    shortDescription: "انسيابية التصميم نصف الدائري (Saddle) بدرجة الكشمير الهادئ مع قفل فضي ناعم يضفي أنوثة راقية.",
+    specs: {
+      dimensions: "العرض ٢٠ سم × الارتفاع ١٧ سم × العمق ٦ سم",
+      yarnType: "خيط قيطان فاخر بغرزة المربعات المتعاكسة (Basketweave) على القلاب الدائري وغرزة السنبلة على الجسم",
+      hardware: "قفل فضي مطروق على هيئة درع انسيابي مع سلسلة كتف فضية ناعمة بحلقات متقاربة ومشابك دوّارة",
+      lining: "بطانة داخلية مفصلة بدقة على الانحناء الدائري للحقيبة",
+      craftingHours: "١٩ ساعة حياكة يدوية دقيقة"
+    },
+    highlights: ["قصّة Saddle دائرية", "درجة كشمير هادئة", "وزن خفيف ومريح"]
+  },
+  {
+    id: 8,
+    code: "شنطة كود #08",
+    codeBadge: "#08",
+    category: "موديلات طولية",
+    color: "أسود ملكي سادة",
+    colorHex: "#18181A",
+    price: 650,
+    priceFormatted: "٦٥٠ ج.م",
+    image: "assets/images/bag-08.jpg",
+    fallbackImage: "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?auto=format&fit=crop&w=1000&q=85",
+    shortDescription: "تصميم طولي عصري (Crossbody) مخصص للهاتف والمقتنيات الأساسية بغرزة السنبلة الطولية البارزة.",
+    specs: {
+      dimensions: "العرض ١٣ سم × الارتفاع ٢٠ سم × العمق ٥ سم",
+      yarnType: "خيط مكرمية أسود معالج مشغول بغرزة السنبلة (Herringbone) الطولية البارزة من الأعلى حتى القاعدة",
+      hardware: "قفل ضغط ذهبي بيضاوي مطروق وسلسلة كروس ذهبية طويلة متداخلة يدوياً مع الخيط الأسود",
+      lining: "بطانة داخلية ناعمة تحمي شاشة الهاتف مع قوام خارجي صلب يحمي المحتويات",
+      craftingHours: "١٦ ساعة حياكة يدوية دقيقة"
+    },
+    highlights: ["موديل طولي عملي", "مثالية للهاتف والبطاقات", "حزام كروس مريح"]
+  },
+  {
+    id: 9,
+    code: "شنطة كود #09",
+    codeBadge: "#09",
+    category: "موديلات طولية",
+    color: "أبيض ثلجي ناصع",
+    colorHex: "#F7F7F9",
+    price: 650,
+    priceFormatted: "٦٥٠ ج.م",
+    image: "assets/images/bag-09.jpg",
+    fallbackImage: "https://images.unsplash.com/photo-1591561954557-26941169b49e?auto=format&fit=crop&w=1000&q=85",
+    shortDescription: "حقيبة كروس طولية باللون الأبيض الثلجي بنقشة النسيج المائل المتداخل وإكسسوارات ذهبية مشرقة.",
+    specs: {
+      dimensions: "العرض ١٢ سم × الارتفاع ٢٠ سم × العمق ٤.٥ سم",
+      yarnType: "خيط مكرمية أبيض ناصع قابل للتنظيف السريع مشغول بغرزة النسيج المائل المتداخل (Diagonal Weave)",
+      hardware: "قفل ضغط ذهبي مستطيل بحواف مصقولة مع حلقات جانبية وسلسلة كتف ذهبية قابلة للفك والتركيب",
+      lining: "بطانة داخلية محكمة مع تقوية هيكلية تحفظ الشكل الطولي الرشيق",
+      craftingHours: "١٦ ساعة حياكة يدوية دقيقة"
+    },
+    highlights: ["تصميم رشيق وخفيف", "سلسلة قابلة للفك", "نقشة نسيج مائل"]
+  },
+  {
+    id: 10,
+    code: "شنطة كود #10",
+    codeBadge: "#10",
+    category: "موديلات طولية",
+    color: "جملي كافيه محدد ببني",
+    colorHex: "#B68F68",
+    price: 650,
+    priceFormatted: "٦٥٠ ج.م",
+    image: "assets/images/bag-10.jpg",
+    fallbackImage: "https://images.unsplash.com/photo-1590874103328-eac38a683ce7?auto=format&fit=crop&w=1000&q=85",
+    shortDescription: "حقيبة طولية مهيكلة بدرجة الجملي الكافيه مع تحديد بارز بالبني الداكن وغرزة الشبكة المتقاطعة.",
+    specs: {
+      dimensions: "العرض ١٨ سم × الارتفاع ٢٠ سم × العمق ٧ سم",
+      yarnType: "خيط قيطان مزدوج اللون: غرزة الشبكة المتقاطعة (X-Lattice) على القلاب وأعمدة السنبلة على الجسم مع تحديد بني داكن",
+      hardware: "قفل ذهبي مسطح مطروق (T-Bar) عالي المتانة مع سلسلة كتف ذهبية مصقولة",
+      lining: "بطانة داخلية كاملة مع جوانب عريضة مدعمة تمنح سعة إضافية مميزة",
+      craftingHours: "٢١ ساعة حياكة يدوية دقيقة"
+    },
+    highlights: ["تحديد يدوي متباين", "عمق جانبي واسع", "حضور كلاسيكي عصري"]
+  }
+];

@@ -1,0 +1,359 @@
+/**
+ * Shanta (شنطة) — Luxury Handmade Bag Boutique
+ * Application Controller: DOM Rendering, Filtering, Modal State & WhatsApp Integration
+ */
+
+(function () {
+  "use strict";
+
+  /* ==========================================================================
+     1. Application State & DOM References
+     ========================================================================== */
+
+  const state = {
+    activeCategory: "all",
+    selectedBag: null,
+    lastFocusedElement: null
+  };
+
+  const dom = {
+    filterContainer: document.getElementById("filterTabs"),
+    productsGrid: document.getElementById("productsGrid"),
+    catalogCount: document.getElementById("catalogCount"),
+    modalBackdrop: document.getElementById("detailModalBackdrop"),
+    modalCloseBtn: document.getElementById("modalCloseBtn"),
+    modalImage: document.getElementById("modalImage"),
+    modalCategory: document.getElementById("modalCategory"),
+    modalCode: document.getElementById("modalCode"),
+    modalTitle: document.getElementById("modalTitle"),
+    modalPrice: document.getElementById("modalPrice"),
+    modalDesc: document.getElementById("modalDesc"),
+    modalHighlights: document.getElementById("modalHighlights"),
+    modalColorSwatch: document.getElementById("modalColorSwatch"),
+    modalColorText: document.getElementById("modalColorText"),
+    modalDimensions: document.getElementById("modalDimensions"),
+    modalYarnType: document.getElementById("modalYarnType"),
+    modalHardware: document.getElementById("modalHardware"),
+    modalLining: document.getElementById("modalLining"),
+    modalOrderBtn: document.getElementById("modalOrderBtn")
+  };
+
+  /* ==========================================================================
+     2. WhatsApp URI Builder
+     ========================================================================== */
+
+  /**
+   * Generates a pre-filled, URI-encoded WhatsApp order URL for a specific bag.
+   * Format: https://wa.me/201505765917?text=مرحباً شنطة، أود طلب: [كود الشنطة] | اللون: [اللون] | السعر: 650 ج.م
+   *
+   * @param {Object} bag - Bag item from BAGS_DATA
+   * @returns {string} Complete WhatsApp wa.me URL
+   */
+  function buildWhatsAppOrderUrl(bag) {
+    const rawMessage = `مرحباً شنطة، أود طلب: ${bag.code} | اللون: ${bag.color} | السعر: 650 ج.م`;
+    const encodedMessage = encodeURIComponent(rawMessage);
+    return `https://wa.me/${STORE_CONFIG.whatsappNumber}?text=${encodedMessage}`;
+  }
+
+  /**
+   * Generates a general WhatsApp inquiry link for header/footer triggers.
+   * @returns {string}
+   */
+  function buildGeneralWhatsAppUrl() {
+    const rawMessage = "مرحباً شنطة، أود الاستفسار عن الكتالوج المتاح والطلب.";
+    return `https://wa.me/${STORE_CONFIG.whatsappNumber}?text=${encodeURIComponent(rawMessage)}`;
+  }
+
+  /* ==========================================================================
+     3. Category Filter Rendering & Logic
+     ========================================================================== */
+
+  /**
+   * Counts items matching a category identifier.
+   * @param {string} categoryId
+   * @returns {number}
+   */
+  function getCategoryCount(categoryId) {
+    if (categoryId === "all") {
+      return BAGS_DATA.length;
+    }
+    return BAGS_DATA.filter((item) => item.category === categoryId).length;
+  }
+
+  /**
+   * Renders the Apple-style segmented filter tabs.
+   */
+  function renderFilterTabs() {
+    if (!dom.filterContainer) return;
+
+    dom.filterContainer.innerHTML = STORE_CONFIG.categories
+      .map((cat) => {
+        const isActive = state.activeCategory === cat.id;
+        const count = getCategoryCount(cat.id);
+        return `
+          <button
+            type="button"
+            class="filter-tab ${isActive ? "is-active" : ""}"
+            role="tab"
+            aria-selected="${isActive}"
+            data-category="${cat.id}"
+          >
+            <span>${cat.label}</span>
+            <span class="filter-tab__count">${count}</span>
+          </button>
+        `;
+      })
+      .join("");
+  }
+
+  /**
+   * Filters BAGS_DATA based on activeCategory.
+   * @returns {Array}
+   */
+  function getFilteredBags() {
+    if (state.activeCategory === "all") {
+      return BAGS_DATA;
+    }
+    return BAGS_DATA.filter((bag) => bag.category === state.activeCategory);
+  }
+
+  /* ==========================================================================
+     4. Product Gallery Grid Rendering
+     ========================================================================== */
+
+  /**
+   * Renders the filtered product cards into the grid.
+   */
+  function renderProductsGrid() {
+    if (!dom.productsGrid) return;
+
+    const filteredBags = getFilteredBags();
+
+    if (dom.catalogCount) {
+      dom.catalogCount.textContent = `عرض ${filteredBags.length} من أصل ${BAGS_DATA.length} موديلات حرفية`;
+    }
+
+    dom.productsGrid.innerHTML = filteredBags
+      .map((bag) => {
+        const whatsappUrl = buildWhatsAppOrderUrl(bag);
+        return `
+          <article class="product-card" data-bag-id="${bag.id}">
+            <div
+              class="product-card__media"
+              data-action="open-modal"
+              data-bag-id="${bag.id}"
+              role="button"
+              tabindex="0"
+              aria-label="معاينة تفاصيل ${bag.code}"
+            >
+              <img
+                src="${bag.image}"
+                alt="${bag.code} - ${bag.color}"
+                class="product-card__img"
+                loading="lazy"
+                onerror="this.onerror=null;this.src='${bag.fallbackImage}';"
+              />
+              <div class="product-card__badges">
+                <span class="badge-category">${bag.category}</span>
+                <span class="badge-code">${bag.codeBadge}</span>
+              </div>
+            </div>
+
+            <div class="product-card__body">
+              <div class="product-card__top">
+                <h3 class="product-card__title">${bag.code}</h3>
+                <span class="product-card__price">${bag.priceFormatted}</span>
+              </div>
+
+              <div class="product-card__color-row">
+                <span class="color-swatch" style="background-color: ${bag.colorHex};"></span>
+                <span>اللون: ${bag.color}</span>
+              </div>
+
+              <p class="product-card__desc">${bag.shortDescription}</p>
+
+              <div class="product-card__actions">
+                <button
+                  type="button"
+                  class="card-btn card-btn--preview"
+                  data-action="open-modal"
+                  data-bag-id="${bag.id}"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
+                    <circle cx="12" cy="12" r="3"/>
+                  </svg>
+                  <span>معاينة التفاصيل</span>
+                </button>
+
+                <a
+                  href="${whatsappUrl}"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="card-btn card-btn--whatsapp"
+                  aria-label="اطلب ${bag.code} عبر واتساب"
+                >
+                  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d="M12.031 2C6.508 2 2.023 6.485 2.023 12.008c0 1.766.461 3.49 1.337 5.012L2 22l5.122-1.343a9.972 9.972 0 0 0 4.909 1.294h.004c5.522 0 10.007-4.485 10.007-10.008C22.042 6.485 17.554 2 12.031 2Zm5.828 14.129c-.246.695-1.432 1.33-2.006 1.414-.537.079-1.216.112-1.964-.125-.454-.144-1.037-.338-1.784-.661-3.14-1.356-5.19-4.517-5.347-4.726-.157-.209-1.277-1.699-1.277-3.241 0-1.542.808-2.3 1.095-2.613.287-.313.626-.391.835-.391.209 0 .417.002.599.011.192.009.45-.073.704.538.261.627.887 2.169.965 2.326.078.157.13.34.026.549-.104.209-.157.34-.313.522-.157.183-.329.408-.47.549-.157.156-.32.326-.138.64.183.313.812 1.34 1.744 2.171 1.199 1.069 2.21 1.4 2.523 1.557.313.157.496.13.679-.078.183-.209.782-.914.991-1.227.209-.313.417-.261.704-.157.287.104 1.825.861 2.138 1.018.313.157.522.235.599.365.078.131.078.757-.168 1.452Z"/>
+                  </svg>
+                  <span>اطلب واتساب</span>
+                </a>
+              </div>
+            </div>
+          </article>
+        `;
+      })
+      .join("");
+  }
+
+  /* ==========================================================================
+     5. Detail Modal Management
+     ========================================================================== */
+
+  /**
+   * Opens the full-screen blurred detail modal for a selected bag ID.
+   * @param {number} bagId
+   */
+  function openDetailModal(bagId) {
+    const bag = BAGS_DATA.find((item) => item.id === Number(bagId));
+    if (!bag || !dom.modalBackdrop) return;
+
+    state.selectedBag = bag;
+    state.lastFocusedElement = document.activeElement;
+
+    // Populate modal fields
+    dom.modalImage.src = bag.image;
+    dom.modalImage.alt = `${bag.code} - ${bag.color}`;
+    dom.modalImage.onerror = function () {
+      this.onerror = null;
+      this.src = bag.fallbackImage;
+    };
+
+    dom.modalCategory.textContent = bag.category;
+    dom.modalCode.textContent = bag.codeBadge;
+    dom.modalTitle.textContent = bag.code;
+    dom.modalPrice.textContent = bag.priceFormatted;
+    dom.modalDesc.textContent = bag.shortDescription;
+
+    dom.modalColorSwatch.style.backgroundColor = bag.colorHex;
+    dom.modalColorText.textContent = bag.color;
+    dom.modalDimensions.textContent = bag.specs.dimensions;
+    dom.modalYarnType.textContent = bag.specs.yarnType;
+    dom.modalHardware.textContent = bag.specs.hardware;
+    dom.modalLining.textContent = `${bag.specs.lining} (${bag.specs.craftingHours})`;
+
+    dom.modalHighlights.innerHTML = bag.highlights
+      .map((chip) => `<span class="highlight-chip">${chip}</span>`)
+      .join("");
+
+    // Bind WhatsApp order URL
+    dom.modalOrderBtn.href = buildWhatsAppOrderUrl(bag);
+
+    // Reveal modal
+    dom.modalBackdrop.classList.add("is-open");
+    dom.modalBackdrop.setAttribute("aria-hidden", "false");
+    document.body.classList.add("modal-open");
+
+    if (dom.modalCloseBtn) {
+      dom.modalCloseBtn.focus();
+    }
+  }
+
+  /**
+   * Closes the active detail modal and restores scroll and focus.
+   */
+  function closeDetailModal() {
+    if (!dom.modalBackdrop) return;
+
+    dom.modalBackdrop.classList.remove("is-open");
+    dom.modalBackdrop.setAttribute("aria-hidden", "true");
+    document.body.classList.remove("modal-open");
+    state.selectedBag = null;
+
+    if (state.lastFocusedElement && typeof state.lastFocusedElement.focus === "function") {
+      state.lastFocusedElement.focus();
+    }
+  }
+
+  /* ==========================================================================
+     6. Event Listeners & Initialization
+     ========================================================================== */
+
+  function bindEvents() {
+    // Filter tab click delegation
+    if (dom.filterContainer) {
+      dom.filterContainer.addEventListener("click", (event) => {
+        const tabBtn = event.target.closest("[data-category]");
+        if (!tabBtn) return;
+
+        const chosenCategory = tabBtn.getAttribute("data-category");
+        if (chosenCategory === state.activeCategory) return;
+
+        state.activeCategory = chosenCategory;
+        renderFilterTabs();
+        renderProductsGrid();
+      });
+    }
+
+    // Product card preview delegation (mouse click)
+    if (dom.productsGrid) {
+      dom.productsGrid.addEventListener("click", (event) => {
+        const trigger = event.target.closest("[data-action='open-modal']");
+        if (!trigger) return;
+
+        const bagId = trigger.getAttribute("data-bag-id");
+        openDetailModal(bagId);
+      });
+
+      // Keyboard Enter/Space on card image preview
+      dom.productsGrid.addEventListener("keydown", (event) => {
+        if (event.key !== "Enter" && event.key !== " ") return;
+        const trigger = event.target.closest("[data-action='open-modal']");
+        if (!trigger) return;
+
+        event.preventDefault();
+        const bagId = trigger.getAttribute("data-bag-id");
+        openDetailModal(bagId);
+      });
+    }
+
+    // Close modal button
+    if (dom.modalCloseBtn) {
+      dom.modalCloseBtn.addEventListener("click", closeDetailModal);
+    }
+
+    // Backdrop click outside modal card
+    if (dom.modalBackdrop) {
+      dom.modalBackdrop.addEventListener("click", (event) => {
+        if (event.target === dom.modalBackdrop) {
+          closeDetailModal();
+        }
+      });
+    }
+
+    // Escape key closes modal
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && dom.modalBackdrop?.classList.contains("is-open")) {
+        closeDetailModal();
+      }
+    });
+
+    // Populate general WhatsApp links if present
+    const directContactLinks = document.querySelectorAll("[data-whatsapp-general]");
+    directContactLinks.forEach((link) => {
+      link.setAttribute("href", buildGeneralWhatsAppUrl());
+    });
+  }
+
+  function init() {
+    renderFilterTabs();
+    renderProductsGrid();
+    bindEvents();
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
+  } else {
+    init();
+  }
+})();
