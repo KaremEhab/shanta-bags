@@ -339,6 +339,7 @@
       if (!response.ok) throw new Error("Catalog unavailable");
       BAGS_DATA = await response.json();
       renderProductsGrid();
+      ShantaShowcase.init(BAGS_DATA, openDetailModal);
     } catch {
       dom.productsGrid.replaceChildren();
       const message = document.createElement("p");

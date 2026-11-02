@@ -38,14 +38,6 @@
         <span class="wordmark" dir="ltr"><span class="wordmark__en" lang="en">SHANTA</span><span class="wordmark__divider" aria-hidden="true"></span><span class="wordmark__ar" lang="ar" dir="rtl">شنطة</span></span>
       </a>
 
-      <nav aria-label="التنقل الرئيسي">
-        <ul class="navbar__links">
-          <li><a href="#catalog" class="navbar__link">المجموعة</a></li>
-          <li><a href="#craftsmanship" class="navbar__link">معايير الحِرفة</a></li>
-          <li><a href="#footer" class="navbar__link">تواصل معنا</a></li>
-        </ul>
-      </nav>
-
       <div class="navbar__actions">
         <span class="navbar__price-pill">حياكة يدوية فاخرة</span>
         <a
@@ -79,14 +71,26 @@
             <a href="https://wa.me/201505765917" target="_blank" rel="noopener noreferrer" class="btn btn--secondary" data-whatsapp-general>تواصلي معنا <span aria-hidden="true">↖</span></a>
           </div>
         </div>
-        <a class="hero__showcase" href="#catalog" aria-label="اكتشفي حقيبة رِمال وباقي المجموعة">
-          <img src="assets/images/rimal-06.webp" alt="حقيبة رِمال باللون الجملي مع إطلالة على الموديل" width="1121" height="1403" fetchpriority="high">
-          <div class="hero__image-label"><div><span class="hero__image-kicker">من المجموعة</span><strong>تفاصيل تستحق الاقتراب.</strong></div><span class="hero__image-arrow" aria-hidden="true">↙</span></div>
-          <span class="hero__image-index" dir="ltr">SHANTA / رِمال</span>
-        </a>
+        <section id="heroShowcase" class="hero__showcase" aria-label="إطلالات شنطة" aria-roledescription="عرض شرائح">
+          <div class="showcase-window">
+            <div id="showcaseTrack" class="showcase-track">
+              <a class="showcase-slide" href="#catalog" aria-label="اكتشفي حقيبة رِمال">
+                <img src="assets/images/rimal-06.webp" alt="إطلالة بحقيبة رِمال" width="1254" height="1254" fetchpriority="high">
+                <div class="showcase-caption"><span>شنطة، على طريقتك.</span><strong>رِمال</strong><span class="showcase-discover">اكتشفي التفاصيل ←</span></div>
+              </a>
+            </div>
+          </div>
+          <div id="showcaseControls" class="showcase-controls" hidden>
+            <div class="showcase-paging"><button id="showcasePrev" type="button" aria-label="الإطلالة السابقة">→</button><span id="showcaseCount" dir="ltr" aria-live="off">1 / 7</span><button id="showcaseNext" type="button" aria-label="الإطلالة التالية">←</button></div>
+            <button id="showcasePause" class="motion-toggle" type="button" aria-pressed="false">إيقاف مؤقت</button>
+          </div>
+        </section>
       </div>
     </section>
-    <div class="collection-note"><div class="container collection-note__inner"><span>موديلات مختارة</span><span>حياكة يدوية ١٠٠٪</span><span>طلب مباشر عبر واتساب</span></div></div>
+    <section class="process-marquee" aria-label="من الخيط للشنطة: خطوات الصناعة">
+      <div class="container process-marquee__heading"><h2>من الخيط… للشنطة.</h2><button id="processPause" class="motion-toggle" type="button" aria-pressed="false" aria-label="إيقاف شريط خطوات الصناعة">إيقاف الحركة</button></div>
+      <div class="process-marquee__window"><div class="process-marquee__track"><div class="process-marquee__group"><span><b dir="ltr">01</b>اختيار الخيوط<i aria-hidden="true">✦</i></span><span><b dir="ltr">02</b>حياكة يدوية<i aria-hidden="true">✦</i></span><span><b dir="ltr">03</b>تشكيل الحقيبة<i aria-hidden="true">✦</i></span><span><b dir="ltr">04</b>تركيب الإكسسوارات<i aria-hidden="true">✦</i></span><span><b dir="ltr">05</b>مراجعة التفاصيل<i aria-hidden="true">✦</i></span><span><b dir="ltr">06</b>جاهزة لإطلالتك<i aria-hidden="true">✦</i></span></div><div class="process-marquee__group" aria-hidden="true"><span><b dir="ltr">01</b>اختيار الخيوط<i aria-hidden="true">✦</i></span><span><b dir="ltr">02</b>حياكة يدوية<i aria-hidden="true">✦</i></span><span><b dir="ltr">03</b>تشكيل الحقيبة<i aria-hidden="true">✦</i></span><span><b dir="ltr">04</b>تركيب الإكسسوارات<i aria-hidden="true">✦</i></span><span><b dir="ltr">05</b>مراجعة التفاصيل<i aria-hidden="true">✦</i></span><span><b dir="ltr">06</b>جاهزة لإطلالتك<i aria-hidden="true">✦</i></span></div></div></div>
+    </section>
 
     <!-- ======================================================================
          Product Gallery Grid
@@ -290,6 +294,7 @@
 
   <!-- Modular JavaScript Files -->
   <script src="js/data.js"></script>
+  <script src="js/showcase.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>
