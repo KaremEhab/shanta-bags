@@ -46,3 +46,12 @@ test('gallery survives edits and validates every photo URL',()=>{
   assert.throws(()=>validate({...product,images:Array(13).fill(product.image)}));
   assert.deepEqual(validate({...product,images:undefined}).images,[product.image]);
 });
+
+test('custom purposes are accepted, trimmed, deduplicated and kept on product edits',()=>{
+  const product={...initial[0],purposes:[' سفر ','جامعة','سفر','هدايا مخصصة']};
+  const saved=validate(product);
+  assert.deepEqual(saved.purposes,['سفر','جامعة','هدايا مخصصة']);assert.equal(saved.category,'سفر');
+  assert.deepEqual(validate({...saved,price:725}).purposes,saved.purposes);
+  assert.equal(validate({...initial[0],purposes:undefined,category:'استخدام جديد'}).category,'استخدام جديد');
+  for(const purposes of [[],[''],['x'.repeat(61)],Array(7).fill('سفر'),'سفر'])assert.throws(()=>validate({...product,purposes}));
+});

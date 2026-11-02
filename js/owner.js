@@ -1,6 +1,8 @@
 'use strict';
 const $ = id=>document.getElementById(id);
 const localPreviews = new Map();
+let selectedPurposes = [];
+const suggestedPurposes = ['العمل','خروجات يومية','خروجات نهارية','عشاء','سهرة','مناسبات','لقاءات','سفر','جامعة','هدية'];
 let catalog={products:[],sha:''}, editing=null, deleting=null, dirty=false, busy=false;
 async function api(path, method='GET', data) {
   const response=await fetch(path,{method,credentials:'same-origin',cache:'no-store',headers:data?{'Content-Type':'application/json'}:{},body:data?JSON.stringify(data):undefined});
@@ -34,12 +36,34 @@ async function load(){lock(true);try{catalog=await api('/api/products');render()
 function openEditor(p){
   releasePreviews();editing=p;dirty=false;$('productForm').reset();$('upload').value='';
   const next=Math.max(0,...catalog.products.map(p=>p.id))+1;
-  const values=p||{code:'',codeBadge:`#${String(next).padStart(2,'0')}`,price:500,category:'كلاسيك وسهرة',color:'',colorHex:'#1c1c1e',image:'',shortDescription:'',highlights:[],specs:{}};
+  const values=p||{code:'',codeBadge:`#${String(next).padStart(2,'0')}`,price:500,purposes:[],color:'',colorHex:'#1c1c1e',image:'',shortDescription:'',highlights:[],specs:{}};
   for(const [key,value]of Object.entries({...values,...values.specs,images:(values.images || [values.image]).filter(Boolean).join("\n"),highlights:values.highlights.join('\n')})){
     const field=$('productForm').elements.namedItem(key);if(field)field.value=value;
   }
+  selectedPurposes=[...(values.purposes || (values.category ? [values.category] : []))];
+  $('purposeInput').value='';status('','purposeStatus');renderPurposes();
   $('editorTitle').textContent=p?'تعديل المنتج':'إضافة منتج';status('','formStatus');renderOwnerGallery();$('editor').showModal();
 }
+function renderPurposes(){
+  $('selectedPurposes').replaceChildren();$('purposeSuggestions').replaceChildren();
+  selectedPurposes.forEach(purpose=>{
+    const button=document.createElement('button');button.type='button';button.className='purpose-tag is-selected';button.textContent=purpose+' ×';button.setAttribute('aria-label',`إزالة استخدام ${purpose}`);button.disabled=busy;
+    button.onclick=()=>{if(busy)return;selectedPurposes=selectedPurposes.filter(p=>p!==purpose);dirty=true;renderPurposes();};$('selectedPurposes').append(button);
+  });
+  const suggestions=[...new Set([...suggestedPurposes,...catalog.products.flatMap(p=>p.purposes || [p.category])])].filter(Boolean);
+  suggestions.filter(p=>!selectedPurposes.includes(p)).forEach(purpose=>{
+    const button=document.createElement('button');button.type='button';button.className='purpose-tag';button.textContent='+ '+purpose;button.disabled=busy;button.onclick=()=>{if(!busy)addPurpose(purpose);};$('purposeSuggestions').append(button);
+  });
+}
+function addPurpose(value){
+  const purpose=value.trim();if(!purpose)return false;
+  if(purpose.length>60){status('استخدم اسماً لا يتجاوز 60 حرفاً.','purposeStatus');return false;}
+  if(selectedPurposes.includes(purpose)){$('purposeInput').value='';status('','purposeStatus');return true;}
+  if(selectedPurposes.length>=6){status('يمكن اختيار 6 استخدامات كحد أقصى.','purposeStatus');return false;}
+  selectedPurposes.push(purpose);dirty=true;$('purposeInput').value='';status('','purposeStatus');renderPurposes();return true;
+}
+$('addPurpose')?.addEventListener('click',()=>addPurpose($('purposeInput').value));
+$('purposeInput')?.addEventListener('keydown',event=>{if(event.key==='Enter'){event.preventDefault();addPurpose(event.target.value);}});
 function releasePreviews(){for(const url of localPreviews.values())URL.revokeObjectURL(url);localPreviews.clear();}
 function galleryPhotos(){const fields=$('productForm').elements;return OwnerGallery.photos(fields.image.value,fields.images.value.split('\n'));}
 function setGallery(photos){const fields=$('productForm').elements;fields.image.value=photos[0] || '';fields.images.value=photos.join('\n');dirty=true;renderOwnerGallery();}
@@ -82,10 +106,13 @@ $('upload')?.addEventListener('change',async()=>{
 });
 $('productForm')?.addEventListener('submit',async e=>{
   e.preventDefault();
+  const pendingPurpose=$('purposeInput').value.trim();
+  if(pendingPurpose && !addPurpose(pendingPurpose))return;
+  if(!selectedPurposes.length){status('أضف استخداماً واحداً على الأقل للمنتج.','purposeStatus');$('purposeInput').focus();return;}
   const data=Object.fromEntries(new FormData(e.target)),specs={};
   lock(true);status('جارٍ حفظ المنتج…','formStatus');
   for(const key of ['dimensions','yarnType','hardware','lining','craftingHours'])specs[key]=data[key];
-  const product={...data,price:Number(data.price),specs,images:data.images.split('\n').map(x=>x.trim()).filter(Boolean),highlights:data.highlights.split('\n').map(x=>x.trim()).filter(Boolean)};
+  const product={...data,purposes:[...selectedPurposes],category:selectedPurposes[0],price:Number(data.price),specs,images:data.images.split('\n').map(x=>x.trim()).filter(Boolean),highlights:data.highlights.split('\n').map(x=>x.trim()).filter(Boolean)};
   try{catalog=await api('/api/products',editing?'PUT':'POST',{sha:catalog.sha,id:editing?.id,product});dirty=false;$('editor').close();releasePreviews();render();status('تم الحفظ في GitHub. سيظهر التغيير في المتجر بعد اكتمال نشر Vercel.');}
   catch(e){status(e.message,'formStatus');}finally{lock(false);}
 });

@@ -6,7 +6,7 @@ function page(authorized) {
     <dialog id="editor"><form id="productForm"><div class="heading"><h2 id="editorTitle">تعديل المنتج</h2><button type="button" id="close" class="secondary">إغلاق</button></div><p id="formStatus" role="status" aria-live="polite"></p><div class="fields">
       <label>اسم المنتج<input name="code" required maxlength="120"></label><label>كود المنتج<input name="codeBadge" required maxlength="30"></label>
       <label>السعر بالجنيه<input name="price" type="number" min="0" max="1000000" step="0.01" required></label>
-      <label>التصنيف<select name="category"><option>كلاسيك وسهرة</option><option>ألوان ناعمة</option><option>موديلات طولية</option></select></label>
+      <section class="wide purpose-editor" aria-label="استخدامات المنتج"><h3>مناسب للاستخدام في</h3><p class="note">اختر أكثر من استخدام أو أضف استخداماً جديداً، حتى 6 لكل منتج.</p><div id="selectedPurposes" class="purpose-tags" aria-live="polite"></div><div class="purpose-entry"><label for="purposeInput">استخدام جديد<input id="purposeInput" maxlength="60" placeholder="مثلاً: سفر، جامعة، هدية"></label><button id="addPurpose" type="button" class="secondary">إضافة</button></div><p id="purposeStatus" role="status"></p><div id="purposeSuggestions" class="purpose-tags" aria-label="اقتراحات الاستخدام"></div></section>
       <label>اسم اللون<input name="color" required maxlength="120"></label><label>درجة اللون<input name="colorHex" type="color" value="#1c1c1e"></label>
       <label class="wide">الوصف<textarea name="shortDescription" maxlength="2000" rows="3"></textarea></label>
       <section class="wide" aria-label="إدارة صور المنتج"><h3>صور المنتج <span id="photoCount"></span></h3>

@@ -71,6 +71,8 @@
   /**
    * Renders all product cards into the grid.
    */
+  function productPurposes(bag) { return bag.purposes?.length ? bag.purposes : [bag.category]; }
+
   function renderProductsGrid() {
     if (!dom.productsGrid) return;
 
@@ -102,7 +104,7 @@
                 width="1121" height="1403"
               />
               <div class="product-card__badges">
-                <span class="badge-category">${escapeHTML(bag.category)}</span>
+                <span class="product-card__purposes">${productPurposes(bag).slice(0,2).map(purpose => `<span class="badge-category">${escapeHTML(purpose)}</span>`).join("")}${productPurposes(bag).length > 2 ? `<span class="badge-category">+${productPurposes(bag).length-2}</span>` : ""}</span>
                 <span class="badge-code">${escapeHTML(bag.codeBadge)}</span>
               </div>
             </div>
@@ -206,7 +208,7 @@
     state.galleryIndex = 0;
     renderGallery();
 
-    dom.modalCategory.textContent = bag.category;
+    dom.modalCategory.textContent = productPurposes(bag).join(" · ");
     dom.modalCode.textContent = bag.codeBadge;
     dom.modalTitle.textContent = bag.code;
     dom.modalPrice.textContent = bag.priceFormatted;

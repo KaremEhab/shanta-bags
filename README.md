@@ -109,3 +109,9 @@ Uploads run individually to stay below function request limits; failed batches r
 successful photos in the form. Save and publish commits the chosen gallery. The
 original catalog entries #01–#10 have been removed; رِمال and newer products remain.
 Storefront cards show the name, price and color; descriptions remain in the details.
+
+Products now support 1–6 custom `purposes` tags (up to 60 characters each). The owner
+can choose suggestions, add new tags, or remove selected tags. Existing saved tags
+become suggestions for other products. `category` mirrors the first purpose for older
+clients; it is no longer restricted to a fixed list. Cards use a full-cover photograph
+with overlay copy/actions and show up to two purposes, with the rest in product details.

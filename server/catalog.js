@@ -1,5 +1,4 @@
 const {HttpError, REPO, github} = require('./security');
-const categories = ['كلاسيك وسهرة','ألوان ناعمة','موديلات طولية'];
 function text(value, label, max=2000, required=false) {
   if (typeof value !== 'string' || value.length > max || (required && !value.trim())) throw new HttpError(400, `Invalid ${label}.`);
   return value.trim();
@@ -12,10 +11,12 @@ function image(value) {
 }
 function validate(product) {
   if (!product || typeof product !== 'object' || !Number.isSafeInteger(product.id) || product.id < 1) throw new HttpError(400,'Invalid product ID.');
-  if (!categories.includes(product.category)) throw new HttpError(400,'Choose a valid category.');
+  const rawPurposes = product.purposes ?? [product.category];
+  if (!Array.isArray(rawPurposes) || !rawPurposes.length || rawPurposes.length > 6) throw new HttpError(400,'Add between 1 and 6 purposes.');
+  const purposes = [...new Set(rawPurposes.map(value => text(value,'purpose',60,true)))];
   if (typeof product.price !== 'number' || !Number.isFinite(product.price) || product.price < 0 || product.price > 1000000) throw new HttpError(400,'Invalid price.');
   if (!/^#[a-f0-9]{6}$/i.test(product.colorHex)) throw new HttpError(400,'Choose a valid color.');
-  const p = {id:product.id, code:text(product.code,'product name',120,true), codeBadge:text(product.codeBadge,'code',30,true), category:product.category, color:text(product.color,'color',120,true), colorHex:product.colorHex, price:Math.round(product.price*100)/100};
+  const p = {id:product.id, code:text(product.code,'product name',120,true), codeBadge:text(product.codeBadge,'code',30,true), category:purposes[0], purposes, color:text(product.color,'color',120,true), colorHex:product.colorHex, price:Math.round(product.price*100)/100};
   p.priceFormatted = `${new Intl.NumberFormat('ar-EG',{maximumFractionDigits:2}).format(p.price)} ج.م`;
   p.image = image(product.image); p.fallbackImage = p.image;
   const gallery = product.images ?? [p.image];
