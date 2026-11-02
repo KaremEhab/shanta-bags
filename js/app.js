@@ -96,6 +96,9 @@
             class="filter-tab ${isActive ? "is-active" : ""}"
             role="tab"
             aria-selected="${isActive}"
+            tabindex="${isActive ? 0 : -1}"
+            aria-controls="productsGrid"
+            id="filter-${STORE_CONFIG.categories.indexOf(cat)}"
             data-category="${cat.id}"
           >
             <span>${cat.label}</span>
@@ -133,6 +136,7 @@
       dom.catalogCount.textContent = `عرض ${filteredBags.length} من أصل ${BAGS_DATA.length} موديلات حرفية`;
     }
 
+    dom.productsGrid.setAttribute("aria-labelledby", `filter-${STORE_CONFIG.categories.findIndex(cat => cat.id === state.activeCategory)}`);
     dom.productsGrid.innerHTML = filteredBags
       .map((bag) => {
         const whatsappUrl = buildWhatsAppOrderUrl(bag);
@@ -151,6 +155,7 @@
                 alt="${bag.code} - ${bag.color}"
                 class="product-card__img"
                 loading="lazy"
+                width="1121" height="1403"
                 onerror="this.onerror=null;this.src='${bag.fallbackImage}';"
               />
               <div class="product-card__badges">
@@ -253,6 +258,7 @@
     dom.modalBackdrop.classList.add("is-open");
     dom.modalBackdrop.setAttribute("aria-hidden", "false");
     document.body.classList.add("modal-open");
+    [document.querySelector("header"), document.querySelector("main"), document.querySelector("footer")].forEach(el => { if (el) el.inert = true; });
 
     if (dom.modalCloseBtn) {
       dom.modalCloseBtn.focus();
@@ -268,6 +274,7 @@
     dom.modalBackdrop.classList.remove("is-open");
     dom.modalBackdrop.setAttribute("aria-hidden", "true");
     document.body.classList.remove("modal-open");
+    [document.querySelector("header"), document.querySelector("main"), document.querySelector("footer")].forEach(el => { if (el) el.inert = false; });
     state.selectedBag = null;
 
     if (state.lastFocusedElement && typeof state.lastFocusedElement.focus === "function") {
@@ -292,6 +299,21 @@
         state.activeCategory = chosenCategory;
         renderFilterTabs();
         renderProductsGrid();
+        dom.filterContainer.querySelector(`[data-category="${chosenCategory}"]`).focus();
+      });
+      dom.filterContainer.addEventListener("keydown", event => {
+        const current = STORE_CONFIG.categories.findIndex(cat => cat.id === state.activeCategory);
+        let next = current;
+        if (event.key === "ArrowLeft") next = (current + 1) % STORE_CONFIG.categories.length;
+        else if (event.key === "ArrowRight") next = (current - 1 + STORE_CONFIG.categories.length) % STORE_CONFIG.categories.length;
+        else if (event.key === "Home") next = 0;
+        else if (event.key === "End") next = STORE_CONFIG.categories.length - 1;
+        else return;
+        event.preventDefault();
+        state.activeCategory = STORE_CONFIG.categories[next].id;
+        renderFilterTabs();
+        renderProductsGrid();
+        dom.filterContainer.querySelectorAll("[role=tab]")[next].focus();
       });
     }
 
@@ -330,6 +352,15 @@
         }
       });
     }
+
+    // Trap keyboard focus inside the open detail sheet.
+    dom.modalBackdrop?.addEventListener("keydown", event => {
+      if (event.key !== "Tab" || !dom.modalBackdrop.classList.contains("is-open")) return;
+      const controls = [...dom.modalBackdrop.querySelectorAll("button, a[href], [tabindex=\"0\"]")].filter(el => !el.disabled);
+      const first = controls[0], last = controls[controls.length - 1];
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+    });
 
     // Escape key closes modal
     document.addEventListener("keydown", (event) => {
