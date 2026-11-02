@@ -1,5 +1,39 @@
 [
   {
+    "id": 16,
+    "code": "جوري",
+    "codeBadge": "#16",
+    "category": "كلاسيك وسهرة",
+    "color": "فوشيا بحواف شامبين",
+    "colorHex": "#C31568",
+    "price": 500,
+    "priceFormatted": "٥٠٠ ج.م",
+    "image": "assets/images/jouri-01.webp",
+    "fallbackImage": "assets/images/jouri-01.webp",
+    "images": [
+      "assets/images/jouri-01.webp",
+      "assets/images/jouri-02.webp",
+      "assets/images/jouri-03.webp",
+      "assets/images/jouri-04.webp",
+      "assets/images/jouri-05.webp",
+      "assets/images/jouri-06.webp"
+    ],
+    "shortDescription": "حقيبة بلون فوشيا نابض، تجمع بين نقشة متشابكة على القلاب وغرزة سنبلة بارزة على الجسم. تحيط بها حواف بلون الشامبين، مع قفل وسلسلة بلون ذهبي لإطلالة لافتة.",
+    "specs": {
+      "dimensions": "تُؤكد عند الطلب",
+      "yarnType": "حياكة بنقشة متشابكة على القلاب وغرزة سنبلة على الجسم وحواف بلون الشامبين",
+      "hardware": "قفل أمامي وسلسلة كتف بلون ذهبي",
+      "lining": "تُؤكد عند الطلب",
+      "craftingHours": ""
+    },
+    "highlights": [
+      "لون فوشيا نابض",
+      "حواف بلون الشامبين",
+      "نقشتان متناسقتان",
+      "سلسلة كتف بلون ذهبي"
+    ]
+  },
+  {
     "id": 15,
     "code": "ياقوتة",
     "codeBadge": "#15",
