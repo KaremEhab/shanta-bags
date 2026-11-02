@@ -14,6 +14,7 @@
 
   const state = {
     selectedBag: null,
+    galleryIndex: 0,
     lastFocusedElement: null
   };
 
@@ -161,6 +162,41 @@
    * Opens the full-screen blurred detail modal for a selected bag ID.
    * @param {number} bagId
    */
+  function galleryImages() {
+    const bag = state.selectedBag;
+    return bag ? [...new Set([bag.image, ...(bag.images || [])])] : [];
+  }
+
+  function renderGallery() {
+    const bag = state.selectedBag, images = galleryImages();
+    if (!bag) return;
+    dom.modalImage.src = images[state.galleryIndex];
+    dom.modalImage.alt = `${bag.code} — صورة ${state.galleryIndex + 1} من ${images.length}`;
+    const controls = document.getElementById("galleryControls");
+    controls.hidden = images.length < 2;
+    document.getElementById("galleryCount").textContent = `${state.galleryIndex + 1} / ${images.length}`;
+    const thumbnails = document.getElementById("galleryThumbnails");
+    thumbnails.replaceChildren();
+    images.forEach((src, index) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.setAttribute("aria-label", `عرض الصورة ${index + 1}`);
+      button.setAttribute("aria-pressed", String(index === state.galleryIndex));
+      const img = document.createElement("img");
+      img.src = src; img.alt = ""; img.loading = "lazy";
+      button.append(img);
+      button.addEventListener("click", () => { state.galleryIndex = index; renderGallery(); document.getElementById("galleryThumbnails").children[index].focus(); });
+      thumbnails.append(button);
+    });
+  }
+
+  function moveGallery(offset) {
+    const images = galleryImages();
+    if (!images.length) return;
+    state.galleryIndex = (state.galleryIndex + offset + images.length) % images.length;
+    renderGallery();
+  }
+
   function openDetailModal(bagId) {
     const bag = BAGS_DATA.find((item) => item.id === Number(bagId));
     if (!bag || !dom.modalBackdrop) return;
@@ -169,12 +205,8 @@
     state.lastFocusedElement = document.activeElement;
 
     // Populate modal fields
-    dom.modalImage.src = bag.image;
-    dom.modalImage.alt = `${bag.code} - ${bag.color}`;
-    dom.modalImage.onerror = function () {
-      this.onerror = null;
-      this.src = bag.fallbackImage;
-    };
+    state.galleryIndex = 0;
+    renderGallery();
 
     dom.modalCategory.textContent = bag.category;
     dom.modalCode.textContent = bag.codeBadge;
@@ -188,7 +220,7 @@
     dom.modalDimensions.textContent = bag.specs.dimensions;
     dom.modalYarnType.textContent = bag.specs.yarnType;
     dom.modalHardware.textContent = bag.specs.hardware;
-    dom.modalLining.textContent = `${bag.specs.lining} (${bag.specs.craftingHours})`;
+    dom.modalLining.textContent = [bag.specs.lining, bag.specs.craftingHours].filter(Boolean).join(" — ");
 
     dom.modalHighlights.innerHTML = bag.highlights
       .map((chip) => `<span class="highlight-chip">${escapeHTML(chip)}</span>`)
@@ -230,6 +262,16 @@
      ========================================================================== */
 
   function bindEvents() {
+    document.getElementById("galleryPrev").addEventListener("click", () => moveGallery(-1));
+    document.getElementById("galleryNext").addEventListener("click", () => moveGallery(1));
+    let touchStart = null;
+    dom.modalImage.addEventListener("touchstart", event => { touchStart = event.touches[0].clientX; }, { passive: true });
+    dom.modalImage.addEventListener("touchend", event => {
+      if (touchStart === null) return;
+      const delta = event.changedTouches[0].clientX - touchStart;
+      if (Math.abs(delta) > 50) moveGallery(delta > 0 ? 1 : -1);
+      touchStart = null;
+    }, { passive: true });
     // Product card preview delegation (mouse click)
     if (dom.productsGrid) {
       dom.productsGrid.addEventListener("click", (event) => {

@@ -96,3 +96,9 @@ The original project overview above describes the initial 10-product catalog. Pr
 count, names and prices are now editable and are no longer constrained to that initial
 catalog. GitHub Contents API and Git integration are the durable storage/publication
 path; no additional database subscription is needed.
+
+New products start at **500 EGP**, editable per product. Products may have up to 12
+photos in `images`, including their `image` cover. The owner editor accepts one gallery
+URL/path per line and appends uploaded photos. The storefront detail sheet supports
+thumbnails, previous/next controls and touch swipes; older single-photo products
+continue to work. Rimal (رِمال) is the first new named product with six supplied photos.

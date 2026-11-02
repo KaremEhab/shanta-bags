@@ -182,7 +182,11 @@
 
       <!-- Bag Preview Column -->
       <div class="modal__media">
-        <img id="modalImage" src="" alt="" class="modal__img" width="1121" height="1403" />
+        <img id="modalImage" src="" alt="" class="modal__img" width="1254" height="1254" />
+        <div id="galleryControls" class="gallery-controls" hidden>
+          <div class="gallery-controls__nav"><button type="button" id="galleryPrev" aria-label="الصورة السابقة">→</button><span id="galleryCount" aria-live="polite"></span><button type="button" id="galleryNext" aria-label="الصورة التالية">←</button></div>
+          <div id="galleryThumbnails" class="gallery-thumbnails" role="group" aria-label="صور المنتج"></div>
+        </div>
       </div>
 
       <!-- Technical Specifications & Sticky Order Column -->

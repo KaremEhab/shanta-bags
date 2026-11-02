@@ -10,6 +10,7 @@ function page(authorized) {
       <label>اسم اللون<input name="color" required maxlength="120"></label><label>درجة اللون<input name="colorHex" type="color" value="#1c1c1e"></label>
       <label class="wide">الوصف<textarea name="shortDescription" maxlength="2000" rows="3"></textarea></label>
       <label class="wide">رابط الصورة أو مسارها<input name="image" required maxlength="2000" dir="ltr" placeholder="https://…"></label>
+      <label class="wide">صور المعرض (رابط أو مسار لكل سطر، حتى 12 صورة)<textarea name="images" rows="4" dir="ltr"></textarea></label>
       <label class="wide">رفع صورة جديدة (JPG / PNG / WebP، حتى 2 MB)<input id="upload" type="file" accept="image/jpeg,image/png,image/webp"></label>
       <img id="preview" class="preview" alt="معاينة صورة المنتج">
       <label>الأبعاد<input name="dimensions" maxlength="1000"></label><label>نوع الخيط<input name="yarnType" maxlength="1000"></label>

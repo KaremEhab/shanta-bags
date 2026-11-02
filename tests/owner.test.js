@@ -7,6 +7,7 @@ const owner=require('../api/owner');
 const upload=require('../api/upload');
 const {validate}=require('../server/catalog');
 const initial=require('../products.json');
+const addedId=Math.max(...initial.map(p=>p.id))+1;
 const originalFetch=global.fetch;
 function res(){return {headers:{},setHeader(k,v){this.headers[k]=v;},status(n){this.code=n;return this;},json(body){this.body=body;return this;},send(body){this.body=body;return this;}};}
 function req(method,body,token){return {method,body,headers:{origin:'https://shanta-bags.vercel.app',cookie:token?`__Host-shanta-owner=${security.seal(token)}`:''}};}
@@ -31,9 +32,17 @@ test('owner add edit delete persist full catalog and stale writes are rejected',
     if(options.method==='PUT') {const body=JSON.parse(options.body);assert.equal(body.branch,'main');assert.equal(body.sha,sha);stored=JSON.parse(Buffer.from(body.content,'base64'));sha=String(++writes);return {ok:true,json:async()=>({content:{sha},commit:{sha:'commit'}})};}
     return {ok:true,json:async()=>({sha,content:Buffer.from(JSON.stringify(stored)).toString('base64')})};
   };
-  let r=res();await products(req('POST',{sha,product:{...initial[0],code:'New bag',price:720}},'owner'),r);assert.equal(r.code,200);assert.equal(stored.length,11);assert.equal(stored[10].id,11);
-  r=res();await products(req('PUT',{sha,id:11,product:{...stored[10],price:900}},'owner'),r);assert.equal(r.code,200);assert.equal(stored[10].price,900);
-  r=res();await products(req('DELETE',{sha:'stale',id:11},'owner'),r);assert.equal(r.code,409);assert.equal(stored.length,11);
-  r=res();await products(req('DELETE',{sha,id:11},'owner'),r);assert.equal(r.code,200);assert.equal(stored.length,10);assert.equal(writes,3);
+  let r=res();await products(req('POST',{sha,product:{...initial[0],code:'New bag',price:720}},'owner'),r);assert.equal(r.code,200);assert.equal(stored.length,initial.length+1);assert.equal(stored.at(-1).id,addedId);
+  r=res();await products(req('PUT',{sha,id:addedId,product:{...stored.at(-1),price:900}},'owner'),r);assert.equal(r.code,200);assert.equal(stored.at(-1).price,900);
+  r=res();await products(req('DELETE',{sha:'stale',id:addedId},'owner'),r);assert.equal(r.code,409);assert.equal(stored.length,initial.length+1);
+  r=res();await products(req('DELETE',{sha,id:addedId},'owner'),r);assert.equal(r.code,200);assert.equal(stored.length,initial.length);assert.equal(writes,3);
 });
 test('unauthorized uploads and SVG uploads are rejected',async()=>{let r=res();await upload(req('POST',{data:'abcd'}),r);assert.equal(r.code,401);global.fetch=async()=>({ok:true,json:async()=>({id:130329660})});r=res();await upload(req('POST',{data:Buffer.from('<svg></svg>').toString('base64')},'owner'),r);assert.equal(r.code,400);});
+
+test('gallery survives edits and validates every photo URL',()=>{
+  const product=initial.find(p=>p.images?.length===6);
+  assert(product);assert.equal(product.price,500);assert.deepEqual(validate(product).images,product.images);
+  assert.throws(()=>validate({...product,images:['javascript:alert(1)']}));
+  assert.throws(()=>validate({...product,images:Array(13).fill(product.image)}));
+  assert.deepEqual(validate({...product,images:undefined}).images,[product.image]);
+});

@@ -18,6 +18,10 @@ function validate(product) {
   const p = {id:product.id, code:text(product.code,'product name',120,true), codeBadge:text(product.codeBadge,'code',30,true), category:product.category, color:text(product.color,'color',120,true), colorHex:product.colorHex, price:Math.round(product.price*100)/100};
   p.priceFormatted = `${new Intl.NumberFormat('ar-EG',{maximumFractionDigits:2}).format(p.price)} ج.م`;
   p.image = image(product.image); p.fallbackImage = p.image;
+  const gallery = product.images ?? [p.image];
+  if (!Array.isArray(gallery) || gallery.length > 12) throw new HttpError(400,'Use up to 12 gallery photos.');
+  p.images = [...new Set([p.image, ...gallery.map(image)])];
+  if (p.images.length > 12) throw new HttpError(400,'Use up to 12 gallery photos including the cover.');
   p.shortDescription = text(product.shortDescription,'description',2000);
   p.specs = {};
   for(const field of ['dimensions','yarnType','hardware','lining','craftingHours']) p.specs[field] = text(product.specs?.[field] ?? '',field,1000);

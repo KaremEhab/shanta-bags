@@ -33,8 +33,8 @@ async function load(){lock(true);try{catalog=await api('/api/products');render()
 function openEditor(p){
   editing=p;dirty=false;$('productForm').reset();$('upload').value='';
   const next=Math.max(0,...catalog.products.map(p=>p.id))+1;
-  const values=p||{code:'',codeBadge:`#${String(next).padStart(2,'0')}`,price:650,category:'كلاسيك وسهرة',color:'',colorHex:'#1c1c1e',image:'',shortDescription:'',highlights:[],specs:{}};
-  for(const [key,value]of Object.entries({...values,...values.specs,highlights:values.highlights.join('\n')})){
+  const values=p||{code:'',codeBadge:`#${String(next).padStart(2,'0')}`,price:500,category:'كلاسيك وسهرة',color:'',colorHex:'#1c1c1e',image:'',shortDescription:'',highlights:[],specs:{}};
+  for(const [key,value]of Object.entries({...values,...values.specs,images:(values.images || [values.image]).filter(Boolean).join("\n"),highlights:values.highlights.join('\n')})){
     const field=$('productForm').elements.namedItem(key);if(field)field.value=value;
   }
   $('editorTitle').textContent=p?'تعديل المنتج':'إضافة منتج';status('','formStatus');preview();$('editor').showModal();
@@ -54,7 +54,9 @@ $('upload')?.addEventListener('change',async()=>{
   lock(true);status('جارٍ رفع الصورة…','formStatus');
   try{
     const data=await new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(r.result.split(',')[1]);r.onerror=reject;r.readAsDataURL(file);});
-    const result=await api('/api/upload','POST',{data});$('productForm').elements.image.value=result.path;dirty=true;
+    const result=await api('/api/upload','POST',{data});const fields=$('productForm').elements;
+    if(!fields.image.value)fields.image.value=result.path;
+    fields.images.value=[fields.images.value.trim(),result.path].filter(Boolean).join('\n');dirty=true;
     $('preview').src=URL.createObjectURL(file);$('preview').hidden=false;status('تم رفع الصورة. اضغط حفظ ونشر لربطها بالمنتج.','formStatus');
   }catch(e){status(e.message,'formStatus');}finally{lock(false);}
 });
@@ -62,7 +64,7 @@ $('productForm')?.addEventListener('submit',async e=>{
   e.preventDefault();lock(true);status('جارٍ حفظ المنتج…','formStatus');
   const data=Object.fromEntries(new FormData(e.target)),specs={};
   for(const key of ['dimensions','yarnType','hardware','lining','craftingHours'])specs[key]=data[key];
-  const product={...data,price:Number(data.price),specs,highlights:data.highlights.split('\n').map(x=>x.trim()).filter(Boolean)};
+  const product={...data,price:Number(data.price),specs,images:data.images.split('\n').map(x=>x.trim()).filter(Boolean),highlights:data.highlights.split('\n').map(x=>x.trim()).filter(Boolean)};
   try{catalog=await api('/api/products',editing?'PUT':'POST',{sha:catalog.sha,id:editing?.id,product});dirty=false;$('editor').close();render();status('تم الحفظ في GitHub. سيظهر التغيير في المتجر بعد اكتمال نشر Vercel.');}
   catch(e){status(e.message,'formStatus');}finally{lock(false);}
 });

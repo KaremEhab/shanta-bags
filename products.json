@@ -1,5 +1,38 @@
 [
   {
+    "id": 11,
+    "code": "رِمال",
+    "codeBadge": "#11",
+    "category": "موديلات طولية",
+    "color": "جملي بحواف بني داكن",
+    "colorHex": "#C69B68",
+    "price": 500,
+    "priceFormatted": "٥٠٠ ج.م",
+    "image": "assets/images/rimal-01.webp",
+    "fallbackImage": "assets/images/rimal-01.webp",
+    "images": [
+      "assets/images/rimal-01.webp",
+      "assets/images/rimal-02.webp",
+      "assets/images/rimal-03.webp",
+      "assets/images/rimal-04.webp",
+      "assets/images/rimal-05.webp",
+      "assets/images/rimal-06.webp"
+    ],
+    "shortDescription": "حقيبة بلون الرمال الدافئ، تجمع بين نقشة هندسية متقاطعة وحواف بنية داكنة. تصميم طولي بسلسلة وقفل بلون ذهبي لإطلالة أنيقة وسهلة التنسيق.",
+    "specs": {
+      "dimensions": "تُؤكد عند الطلب",
+      "yarnType": "حياكة بنقشة متقاطعة على القلاب وأعمدة طولية على الجسم",
+      "hardware": "سلسلة كتف وقفل بلون ذهبي",
+      "lining": "تُؤكد عند الطلب",
+      "craftingHours": ""
+    },
+    "highlights": [
+      "نقشة هندسية متقاطعة",
+      "حواف بنية متباينة",
+      "سلسلة كتف بلون ذهبي"
+    ]
+  },
+  {
     "id": 1,
     "code": "شنطة كود #01",
     "codeBadge": "#01",
