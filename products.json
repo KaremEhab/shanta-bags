@@ -1,5 +1,39 @@
 [
   {
+    "id": 15,
+    "code": "ياقوتة",
+    "codeBadge": "#15",
+    "category": "كلاسيك وسهرة",
+    "color": "أحمر ياقوتي بحواف خرز أبيض",
+    "colorHex": "#A50820",
+    "price": 500,
+    "priceFormatted": "٥٠٠ ج.م",
+    "image": "assets/images/yaqouta-01.webp",
+    "fallbackImage": "assets/images/yaqouta-01.webp",
+    "images": [
+      "assets/images/yaqouta-01.webp",
+      "assets/images/yaqouta-02.webp",
+      "assets/images/yaqouta-03.webp",
+      "assets/images/yaqouta-04.webp",
+      "assets/images/yaqouta-05.webp",
+      "assets/images/yaqouta-06.webp"
+    ],
+    "shortDescription": "حقيبة بلون أحمر ياقوتي، بتصميم مستدير وحياكة طولية بارزة. تحيط بها حبات خرز أبيض لؤلؤي، مع قفل بلون فضي داكن وحزام كتف أحمر لإطلالة مميزة.",
+    "specs": {
+      "dimensions": "تُؤكد عند الطلب",
+      "yarnType": "حياكة حمراء بأعمدة طولية بارزة وحواف مزينة بخرز أبيض لؤلؤي",
+      "hardware": "قفل وحلقات بلون فضي داكن وحزام كتف أحمر",
+      "lining": "تُؤكد عند الطلب",
+      "craftingHours": ""
+    },
+    "highlights": [
+      "لون أحمر ياقوتي",
+      "حواف بخرز أبيض لؤلؤي",
+      "تصميم مستدير",
+      "حزام كتف أحمر"
+    ]
+  },
+  {
     "id": 14,
     "code": "ليلة",
     "codeBadge": "#14",
