@@ -16,9 +16,7 @@
     if (!root || !track || !slides.length) return;
     const controls = document.getElementById("showcaseControls");
     const count = document.getElementById("showcaseCount");
-    const toggle = document.getElementById("showcasePause");
-    const reduced = matchMedia("(prefers-reduced-motion: reduce)");
-    let index = 0, paused = reduced.matches, inView = true, hovered = false, timer;
+    let index = 0, moving = false;
 
     const links = slides.map((slide, position) => {
       const link = document.createElement("a");
@@ -29,59 +27,57 @@
       img.src = slide.image;
       img.alt = `إطلالة بحقيبة ${slide.name}`;
       img.width = 1254; img.height = 1254;
-      img.loading = position < 2 ? "eager" : "lazy";
+      img.loading = "eager";
       if (!position) img.fetchPriority = "high";
       const caption = document.createElement("div");
       caption.className = "showcase-caption";
-      const kicker = document.createElement("span");
-      kicker.textContent = "شنطة، على طريقتك.";
       const name = document.createElement("strong");
       name.textContent = slide.name;
       const discover = document.createElement("span");
       discover.className = "showcase-discover";
       discover.textContent = "اكتشفي التفاصيل ←";
-      caption.append(kicker, name, discover);
+      caption.append(name, discover);
       link.append(img, caption);
       link.addEventListener("click", event => { event.preventDefault(); openProduct(slide.id); });
       return link;
     });
-    track.replaceChildren(...links);
+    // Identical end slides let the last-to-first transition keep moving forward.
+    const before = links[links.length - 1].cloneNode(true);
+    const after = links[0].cloneNode(true);
+    for (const clone of [before, after]) {
+      clone.setAttribute("aria-hidden", "true");
+      clone.tabIndex = -1;
+      clone.inert = true;
+    }
+    track.replaceChildren(before, ...links, after);
     controls.hidden = slides.length < 2;
 
-    function show(next) {
+    function settle() {
+      track.style.transition = "none";
+      track.style.transform = `translateX(-${(index + 1) * 100}%)`;
+      moving = false;
+    }
+    function show(next, animate = true) {
+      if (moving) return;
       index = (next + slides.length) % slides.length;
-      track.style.transform = `translateX(-${index * 100}%)`;
+      const motion = animate && !matchMedia("(prefers-reduced-motion: reduce)").matches;
+      track.style.transition = motion ? "transform .7s var(--ease)" : "none";
+      track.style.transform = `translateX(-${(motion ? next + 1 : index + 1) * 100}%)`;
+      moving = motion;
       links.forEach((link, position) => {
         link.tabIndex = position === index ? 0 : -1;
         link.setAttribute("aria-hidden", String(position !== index));
       });
       count.textContent = `${index + 1} / ${slides.length}`;
-      links[(index + 1) % slides.length].querySelector("img").loading = "eager";
     }
-    function schedule() {
-      clearInterval(timer);
-      if (!paused && inView && !hovered && !document.hidden && !root.matches(":focus-within") && slides.length > 1) {
-        timer = setInterval(() => {
-          if (!document.body.classList.contains("modal-open")) show(index + 1);
-        }, 5000);
-      }
-      toggle.textContent = paused ? "تشغيل تلقائي" : "إيقاف مؤقت";
-      toggle.setAttribute("aria-pressed", String(paused));
-      toggle.setAttribute("aria-label", paused ? "تشغيل عرض الإطلالات تلقائياً" : "إيقاف عرض الإطلالات مؤقتاً");
-    }
-    function move(delta) { show(index + delta); schedule(); }
+    track.addEventListener("transitionend", event => {
+      if (event.target === track && event.propertyName === "transform") settle();
+    });
+    track.addEventListener("transitioncancel", settle);
+    // No hover, touch, focus or modal state can suspend automatic playback.
+    function move(delta) { show(index + delta); }
     document.getElementById("showcasePrev").addEventListener("click", () => move(-1));
     document.getElementById("showcaseNext").addEventListener("click", () => move(1));
-    toggle.addEventListener("click", () => { paused = !paused; schedule(); });
-    root.addEventListener("mouseenter", () => { hovered = true; schedule(); });
-    root.addEventListener("mouseleave", () => { hovered = false; schedule(); });
-    root.addEventListener("focusin", schedule);
-    root.addEventListener("focusout", () => queueMicrotask(schedule));
-    document.addEventListener("visibilitychange", schedule);
-    reduced.addEventListener("change", () => { paused = reduced.matches; schedule(); });
-    if (typeof IntersectionObserver !== "undefined") {
-      new IntersectionObserver(entries => { inView = entries[0].isIntersecting; schedule(); }, { threshold: .2 }).observe(root);
-    }
     let touchStart;
     track.addEventListener("touchstart", event => { touchStart = [event.touches[0].clientX, event.touches[0].clientY]; }, { passive: true });
     track.addEventListener("touchend", event => {
@@ -92,16 +88,8 @@
       touchStart = null;
     }, { passive: false });
     track.addEventListener("touchcancel", () => { touchStart = null; }, { passive: true });
-    const marquee = document.querySelector(".process-marquee");
-    const processToggle = document.getElementById("processPause");
-    processToggle?.addEventListener("click", () => {
-      const stopped = marquee.classList.toggle("is-paused");
-      processToggle.textContent = stopped ? "تشغيل الحركة" : "إيقاف الحركة";
-      processToggle.setAttribute("aria-pressed", String(stopped));
-      processToggle.setAttribute("aria-label", stopped ? "تشغيل شريط خطوات الصناعة" : "إيقاف شريط خطوات الصناعة");
-    });
-    show(0);
-    schedule();
+    show(0, false);
+    if (slides.length > 1) setInterval(() => show(index + 1), 5000);
   }
 
   if (typeof module !== "undefined" && module.exports) module.exports = { modelSlides };
