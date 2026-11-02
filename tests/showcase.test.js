@@ -12,6 +12,9 @@ test('every current bag has an existing model photo in the campaign, never its p
   for (const slide of slides) {
     assert.notEqual(slide.image, products.find(product => product.id === slide.id).image);
     assert.ok(fs.existsSync(path.join(__dirname, '..', slide.image)));
+    const bytes = fs.readFileSync(path.join(__dirname, '..', slide.image));
+    assert.equal(bytes.subarray(0, 4).toString(), 'RIFF');
+    assert.equal(bytes.subarray(8, 12).toString(), 'WEBP');
   }
 });
 
