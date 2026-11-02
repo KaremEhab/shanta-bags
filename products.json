@@ -1,5 +1,39 @@
 [
   {
+    "id": 14,
+    "code": "ليلة",
+    "codeBadge": "#14",
+    "category": "كلاسيك وسهرة",
+    "color": "أسود بشريط بيج رملي",
+    "colorHex": "#171615",
+    "price": 500,
+    "priceFormatted": "٥٠٠ ج.م",
+    "image": "assets/images/layla-01.webp",
+    "fallbackImage": "assets/images/layla-01.webp",
+    "images": [
+      "assets/images/layla-01.webp",
+      "assets/images/layla-02.webp",
+      "assets/images/layla-03.webp",
+      "assets/images/layla-04.webp",
+      "assets/images/layla-05.webp",
+      "assets/images/layla-06.webp"
+    ],
+    "shortDescription": "حقيبة سوداء بنقشة هندسية وشريط بيج رملي يتوسط التصميم. يكمّلها قفل مزخرف وسلسلة بلون ذهبي لتمنح إطلالتك اليومية والمسائية حضوراً أنيقاً.",
+    "specs": {
+      "dimensions": "تُؤكد عند الطلب",
+      "yarnType": "حياكة هندسية سوداء مع شريط وسطي بلون بيج رملي",
+      "hardware": "قفل أمامي مزخرف وسلسلة كتف بلون ذهبي",
+      "lining": "تُؤكد عند الطلب",
+      "craftingHours": ""
+    },
+    "highlights": [
+      "تباين الأسود والبيج",
+      "نقشة هندسية",
+      "قفل أمامي مزخرف",
+      "سلسلة كتف بلون ذهبي"
+    ]
+  },
+  {
     "id": 13,
     "code": "لؤلؤة",
     "codeBadge": "#13",
