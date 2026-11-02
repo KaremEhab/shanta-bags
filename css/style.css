@@ -246,4 +246,4 @@ svg { flex-shrink: 0; }
 .gallery-thumbnails button { width:48px; height:48px; flex-shrink:0; border:2px solid transparent; border-radius:8px; overflow:hidden; padding:2px; }
 .gallery-thumbnails button[aria-pressed="true"] { border-color:var(--primary); }
 .gallery-thumbnails img { width:100%; height:100%; object-fit:cover; border-radius:4px; }
-@media(max-width:768px) { .modal__media { height:auto; } .modal__img { flex:none; height:auto; max-height:45dvh; aspect-ratio:1; } }
+@media(max-width:768px) { .modal__media { height:auto; } .modal__img { flex:none; height:auto; max-height:45dvh; aspect-ratio:1; object-fit:cover; object-position:center; } }
