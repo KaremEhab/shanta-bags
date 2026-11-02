@@ -124,6 +124,7 @@
                 <button
                   type="button"
                   class="card-btn card-btn--preview"
+                  aria-label="عرض تفاصيل ${escapeHTML(bag.code)}"
                   data-action="open-modal"
                   data-bag-id="${escapeHTML(bag.id)}"
                 >
@@ -131,7 +132,7 @@
                     <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
                     <circle cx="12" cy="12" r="3"/>
                   </svg>
-                  <span>معاينة التفاصيل</span>
+                  <span>التفاصيل</span>
                 </button>
 
                 <a
