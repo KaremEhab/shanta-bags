@@ -1,5 +1,39 @@
 [
   {
+    "id": 13,
+    "code": "لؤلؤة",
+    "codeBadge": "#13",
+    "category": "ألوان ناعمة",
+    "color": "أبيض لؤلؤي",
+    "colorHex": "#F2F0EB",
+    "price": 500,
+    "priceFormatted": "٥٠٠ ج.م",
+    "image": "assets/images/lulua-01.webp",
+    "fallbackImage": "assets/images/lulua-01.webp",
+    "images": [
+      "assets/images/lulua-01.webp",
+      "assets/images/lulua-02.webp",
+      "assets/images/lulua-03.webp",
+      "assets/images/lulua-04.webp",
+      "assets/images/lulua-05.webp",
+      "assets/images/lulua-06.webp"
+    ],
+    "shortDescription": "حقيبة بلون أبيض لؤلؤي، بحياكة بارزة تجمع بين الجدائل والأعمدة الطولية. حواف ناعمة مستديرة وقفل وسلسلة بلون ذهبي تمنح إطلالتك لمسة هادئة وأنيقة.",
+    "specs": {
+      "dimensions": "تُؤكد عند الطلب",
+      "yarnType": "حياكة بارزة بجدائل وأعمدة طولية وحواف مستديرة",
+      "hardware": "قفل أمامي وسلسلة كتف بلون ذهبي",
+      "lining": "تُؤكد عند الطلب",
+      "craftingHours": ""
+    },
+    "highlights": [
+      "لون أبيض لؤلؤي",
+      "جدائل بارزة",
+      "حواف ناعمة مستديرة",
+      "تفاصيل بلون ذهبي"
+    ]
+  },
+  {
     "id": 12,
     "code": "بُنّ",
     "codeBadge": "#12",
