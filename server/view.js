@@ -1,5 +1,5 @@
 function page(authorized) {
-  return `<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>SHANTA — إدارة المتجر</title><link rel="stylesheet" href="/css/owner.css"><script src="/js/owner.js" defer></script></head><body><header><a href="/" class="brand">SHANTA <span>شنطة</span></a><span>مساحة المالك الخاصة</span></header><main><p class="eyebrow">OWNER ACCESS</p>${authorized ? `
+  return `<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>SHANTA — إدارة المتجر</title><link rel="stylesheet" href="/css/owner.css"><script src="/js/owner-gallery.js" defer></script><script src="/js/owner.js" defer></script></head><body><header><a href="/" class="brand">SHANTA <span>شنطة</span></a><span>مساحة المالك الخاصة</span></header><main><p class="eyebrow">OWNER ACCESS</p>${authorized ? `
     <div class="heading"><div><h1>منتجاتك، بطريقتك.</h1><p>أضف وعدّل واحذف منتجات متجرك من مكان واحد.</p></div><button id="logout" class="secondary">تسجيل الخروج</button></div>
     <div class="toolbar"><button id="add">+ إضافة منتج</button><button id="reload" class="secondary">تحديث القائمة</button><a href="/" target="_blank" rel="noopener">عرض المتجر ↗</a></div>
     <p id="status" role="status" aria-live="polite">جارٍ تحميل المنتجات…</p><section id="list" class="grid" aria-label="المنتجات"></section>
@@ -9,10 +9,12 @@ function page(authorized) {
       <label>التصنيف<select name="category"><option>كلاسيك وسهرة</option><option>ألوان ناعمة</option><option>موديلات طولية</option></select></label>
       <label>اسم اللون<input name="color" required maxlength="120"></label><label>درجة اللون<input name="colorHex" type="color" value="#1c1c1e"></label>
       <label class="wide">الوصف<textarea name="shortDescription" maxlength="2000" rows="3"></textarea></label>
-      <label class="wide">رابط الصورة أو مسارها<input name="image" required maxlength="2000" dir="ltr" placeholder="https://…"></label>
-      <label class="wide">صور المعرض (رابط أو مسار لكل سطر، حتى 12 صورة)<textarea name="images" rows="4" dir="ltr"></textarea></label>
-      <label class="wide">رفع صورة جديدة (JPG / PNG / WebP، حتى 2 MB)<input id="upload" type="file" accept="image/jpeg,image/png,image/webp"></label>
-      <img id="preview" class="preview" alt="معاينة صورة المنتج">
+      <section class="wide" aria-label="إدارة صور المنتج"><h3>صور المنتج <span id="photoCount"></span></h3>
+        <label>إضافة صور (يمكن اختيار أكثر من صورة معاً)<input id="upload" type="file" multiple accept="image/jpeg,image/png,image/webp"></label>
+        <p class="note">حتى 12 صورة لكل منتج، بحد أقصى 2 MB للصورة. اختر الغلاف ورتّب الصور أو أزلها، ثم اضغط حفظ ونشر.</p>
+        <div id="ownerGallery" class="owner-gallery"></div>
+        <details><summary>إضافة الصور بروابط مباشرة</summary><label>رابط صورة الغلاف أو مسارها<input name="image" required maxlength="2000" dir="ltr" placeholder="https://…"></label><label>صور المعرض (رابط أو مسار لكل سطر)<textarea name="images" rows="4" dir="ltr"></textarea></label></details>
+      </section>
       <label>الأبعاد<input name="dimensions" maxlength="1000"></label><label>نوع الخيط<input name="yarnType" maxlength="1000"></label>
       <label>الإكسسوارات<input name="hardware" maxlength="1000"></label><label>البطانة<input name="lining" maxlength="1000"></label>
       <label>وقت الصناعة<input name="craftingHours" maxlength="1000"></label><label class="wide">المميزات (ميزة في كل سطر، حتى 12)<textarea name="highlights" rows="3"></textarea></label>

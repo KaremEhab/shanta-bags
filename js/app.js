@@ -118,8 +118,6 @@
                 <span>اللون: ${escapeHTML(bag.color)}</span>
               </div>
 
-              <p class="product-card__desc">${escapeHTML(bag.shortDescription)}</p>
-
               <div class="product-card__actions">
                 <button
                   type="button"

@@ -102,3 +102,10 @@ photos in `images`, including their `image` cover. The owner editor accepts one 
 URL/path per line and appends uploaded photos. The storefront detail sheet supports
 thumbnails, previous/next controls and touch swipes; older single-photo products
 continue to work. Rimal (رِمال) is the first new named product with six supplied photos.
+
+Owner photo management now supports selecting multiple files at once, previewing all
+photos, picking a cover, changing their order and removing photos from the product.
+Uploads run individually to stay below function request limits; failed batches retain
+successful photos in the form. Save and publish commits the chosen gallery. The
+original catalog entries #01–#10 have been removed; رِمال and newer products remain.
+Storefront cards show the name, price and color; descriptions remain in the details.
