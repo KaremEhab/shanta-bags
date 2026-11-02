@@ -1,5 +1,39 @@
 [
   {
+    "id": 12,
+    "code": "بُنّ",
+    "codeBadge": "#12",
+    "category": "كلاسيك وسهرة",
+    "color": "بني شوكولاتة داكن",
+    "colorHex": "#4A2A20",
+    "price": 500,
+    "priceFormatted": "٥٠٠ ج.م",
+    "image": "assets/images/bunn-01.webp",
+    "fallbackImage": "assets/images/bunn-01.webp",
+    "images": [
+      "assets/images/bunn-01.webp",
+      "assets/images/bunn-02.webp",
+      "assets/images/bunn-03.webp",
+      "assets/images/bunn-04.webp",
+      "assets/images/bunn-05.webp",
+      "assets/images/bunn-06.webp"
+    ],
+    "shortDescription": "حقيبة بلون البُنّ الداكن، بنقشة هندسية بارزة وحواف مجدولة. يكمّلها قفل وسلسلة بلون ذهبي لترافق إطلالاتك اليومية والمسائية بأناقة هادئة.",
+    "specs": {
+      "dimensions": "تُؤكد عند الطلب",
+      "yarnType": "حياكة بنقشة هندسية بارزة وحواف مجدولة",
+      "hardware": "قفل أمامي وسلسلة كتف بلون ذهبي",
+      "lining": "تُؤكد عند الطلب",
+      "craftingHours": ""
+    },
+    "highlights": [
+      "لون بني داكن",
+      "نقشة هندسية بارزة",
+      "حواف مجدولة",
+      "تفاصيل بلون ذهبي"
+    ]
+  },
+  {
     "id": 11,
     "code": "رِمال",
     "codeBadge": "#11",
