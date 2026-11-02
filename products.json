@@ -1,5 +1,39 @@
 [
   {
+    "id": 17,
+    "code": "لازورد",
+    "codeBadge": "#17",
+    "category": "كلاسيك وسهرة",
+    "color": "أزرق نيلي",
+    "colorHex": "#31547B",
+    "price": 500,
+    "priceFormatted": "٥٠٠ ج.م",
+    "image": "assets/images/lazaward-01.webp",
+    "fallbackImage": "assets/images/lazaward-01.webp",
+    "images": [
+      "assets/images/lazaward-01.webp",
+      "assets/images/lazaward-02.webp",
+      "assets/images/lazaward-03.webp",
+      "assets/images/lazaward-04.webp",
+      "assets/images/lazaward-05.webp",
+      "assets/images/lazaward-06.webp"
+    ],
+    "shortDescription": "حقيبة بلون أزرق نيلي، تجمع بين مربعات بارزة على القلاب وجدائل طولية على الجسم. يكمّلها قفل هندسي معدني وحلية فراشة بلون فضي، لتمنح إطلالتك لمسة هادئة ومميزة.",
+    "specs": {
+      "dimensions": "تُؤكد عند الطلب",
+      "yarnType": "حياكة بمربعات بارزة على القلاب وجدائل طولية على الجسم",
+      "hardware": "قفل أمامي هندسي وحلية فراشة بلون فضي",
+      "lining": "تُؤكد عند الطلب",
+      "craftingHours": ""
+    },
+    "highlights": [
+      "لون أزرق نيلي",
+      "مربعات بارزة",
+      "حلية فراشة",
+      "قفل هندسي معدني"
+    ]
+  },
+  {
     "id": 16,
     "code": "جوري",
     "codeBadge": "#16",
