@@ -10,6 +10,8 @@
      1. Application State & DOM References
      ========================================================================== */
 
+  const escapeHTML = value => String(value ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;", "'":"&#39;"}[c]));
+
   const state = {
     activeCategory: "all",
     selectedBag: null,
@@ -44,13 +46,13 @@
 
   /**
    * Generates a pre-filled, URI-encoded WhatsApp order URL for a specific bag.
-   * Format: https://wa.me/201505765917?text=مرحباً شنطة، أود طلب: [كود الشنطة] | اللون: [اللون] | السعر: 650 ج.م
+   * Format: https://wa.me/201505765917?text=مرحباً شنطة، أود طلب: [كود الشنطة] | اللون: [اللون] | السعر: [سعر المنتج] ج.م
    *
    * @param {Object} bag - Bag item from BAGS_DATA
    * @returns {string} Complete WhatsApp wa.me URL
    */
   function buildWhatsAppOrderUrl(bag) {
-    const rawMessage = `مرحباً شنطة، أود طلب: ${bag.code} | اللون: ${bag.color} | السعر: 650 ج.م`;
+    const rawMessage = `مرحباً شنطة، أود طلب: ${bag.code} | اللون: ${bag.color} | السعر: ${bag.price} ج.م`;
     const encodedMessage = encodeURIComponent(rawMessage);
     return `https://wa.me/${STORE_CONFIG.whatsappNumber}?text=${encodedMessage}`;
   }
@@ -137,52 +139,55 @@
     }
 
     dom.productsGrid.setAttribute("aria-labelledby", `filter-${STORE_CONFIG.categories.findIndex(cat => cat.id === state.activeCategory)}`);
+    if (!filteredBags.length) {
+      dom.productsGrid.innerHTML = "<p>لا توجد منتجات في هذا القسم حالياً.</p>";
+      return;
+    }
     dom.productsGrid.innerHTML = filteredBags
       .map((bag) => {
         const whatsappUrl = buildWhatsAppOrderUrl(bag);
         return `
-          <article class="product-card" data-bag-id="${bag.id}">
+          <article class="product-card" data-bag-id="${escapeHTML(bag.id)}">
             <div
               class="product-card__media"
               data-action="open-modal"
-              data-bag-id="${bag.id}"
+              data-bag-id="${escapeHTML(bag.id)}"
               role="button"
               tabindex="0"
-              aria-label="معاينة تفاصيل ${bag.code}"
+              aria-label="معاينة تفاصيل ${escapeHTML(bag.code)}"
             >
               <img
-                src="${bag.image}"
-                alt="${bag.code} - ${bag.color}"
+                src="${escapeHTML(bag.image)}"
+                alt="${escapeHTML(bag.code)} - ${escapeHTML(bag.color)}"
                 class="product-card__img"
                 loading="lazy"
                 width="1121" height="1403"
-                onerror="this.onerror=null;this.src='${bag.fallbackImage}';"
               />
               <div class="product-card__badges">
-                <span class="badge-category">${bag.category}</span>
-                <span class="badge-code">${bag.codeBadge}</span>
+                <span class="badge-category">${escapeHTML(bag.category)}</span>
+                <span class="badge-code">${escapeHTML(bag.codeBadge)}</span>
               </div>
             </div>
 
             <div class="product-card__body">
               <div class="product-card__top">
-                <h3 class="product-card__title">${bag.code}</h3>
-                <span class="product-card__price">${bag.priceFormatted}</span>
+                <h3 class="product-card__title">${escapeHTML(bag.code)}</h3>
+                <span class="product-card__price">${escapeHTML(bag.priceFormatted)}</span>
               </div>
 
               <div class="product-card__color-row">
-                <span class="color-swatch" style="background-color: ${bag.colorHex};"></span>
-                <span>اللون: ${bag.color}</span>
+                <span class="color-swatch" style="background-color: ${escapeHTML(bag.colorHex)};"></span>
+                <span>اللون: ${escapeHTML(bag.color)}</span>
               </div>
 
-              <p class="product-card__desc">${bag.shortDescription}</p>
+              <p class="product-card__desc">${escapeHTML(bag.shortDescription)}</p>
 
               <div class="product-card__actions">
                 <button
                   type="button"
                   class="card-btn card-btn--preview"
                   data-action="open-modal"
-                  data-bag-id="${bag.id}"
+                  data-bag-id="${escapeHTML(bag.id)}"
                 >
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                     <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
@@ -196,7 +201,7 @@
                   target="_blank"
                   rel="noopener noreferrer"
                   class="card-btn card-btn--whatsapp"
-                  aria-label="اطلب ${bag.code} عبر واتساب"
+                  aria-label="اطلب ${escapeHTML(bag.code)} عبر واتساب"
                 >
                   <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                     <path d="M12.031 2C6.508 2 2.023 6.485 2.023 12.008c0 1.766.461 3.49 1.337 5.012L2 22l5.122-1.343a9.972 9.972 0 0 0 4.909 1.294h.004c5.522 0 10.007-4.485 10.007-10.008C22.042 6.485 17.554 2 12.031 2Zm5.828 14.129c-.246.695-1.432 1.33-2.006 1.414-.537.079-1.216.112-1.964-.125-.454-.144-1.037-.338-1.784-.661-3.14-1.356-5.19-4.517-5.347-4.726-.157-.209-1.277-1.699-1.277-3.241 0-1.542.808-2.3 1.095-2.613.287-.313.626-.391.835-.391.209 0 .417.002.599.011.192.009.45-.073.704.538.261.627.887 2.169.965 2.326.078.157.13.34.026.549-.104.209-.157.34-.313.522-.157.183-.329.408-.47.549-.157.156-.32.326-.138.64.183.313.812 1.34 1.744 2.171 1.199 1.069 2.21 1.4 2.523 1.557.313.157.496.13.679-.078.183-.209.782-.914.991-1.227.209-.313.417-.261.704-.157.287.104 1.825.861 2.138 1.018.313.157.522.235.599.365.078.131.078.757-.168 1.452Z"/>
@@ -238,6 +243,7 @@
     dom.modalCode.textContent = bag.codeBadge;
     dom.modalTitle.textContent = bag.code;
     dom.modalPrice.textContent = bag.priceFormatted;
+    document.getElementById("modalFooterPrice").textContent = bag.priceFormatted;
     dom.modalDesc.textContent = bag.shortDescription;
 
     dom.modalColorSwatch.style.backgroundColor = bag.colorHex;
@@ -248,7 +254,7 @@
     dom.modalLining.textContent = `${bag.specs.lining} (${bag.specs.craftingHours})`;
 
     dom.modalHighlights.innerHTML = bag.highlights
-      .map((chip) => `<span class="highlight-chip">${chip}</span>`)
+      .map((chip) => `<span class="highlight-chip">${escapeHTML(chip)}</span>`)
       .join("");
 
     // Bind WhatsApp order URL
@@ -376,10 +382,24 @@
     });
   }
 
-  function init() {
-    renderFilterTabs();
-    renderProductsGrid();
+  async function init() {
     bindEvents();
+    try {
+      const response = await fetch("/products.json", { cache: "no-cache" });
+      if (!response.ok) throw new Error("Catalog unavailable");
+      BAGS_DATA = await response.json();
+      renderFilterTabs();
+      renderProductsGrid();
+    } catch {
+      if (dom.catalogCount) dom.catalogCount.textContent = "";
+      dom.productsGrid.replaceChildren();
+      const message = document.createElement("p");
+      message.textContent = "تعذر تحميل المنتجات. حاول مرة أخرى.";
+      const retry = document.createElement("button");
+      retry.textContent = "إعادة المحاولة";
+      retry.addEventListener("click", () => location.reload());
+      dom.productsGrid.append(message, retry);
+    }
   }
 
   if (document.readyState === "loading") {

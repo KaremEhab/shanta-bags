@@ -59,3 +59,40 @@ npx serve .
 ### النشر على Vercel
 1. اربط المستودع بحسابك على Vercel.
 2. اختر الإعداد الافتراضي (`Other / Static`) واضغط **Deploy**.
+
+## Owner product manager
+
+Production: https://shanta-bags.vercel.app/owner
+
+The storefront reads `products.json`. The owner can create, edit and delete products,
+change individual prices and upload JPG/PNG/WebP photos (up to 2 MB each). Updates
+commit to `main`, and the existing Vercel Git integration publishes them. Previous
+catalog versions remain in Git history. Removing a product does not delete its image
+files from history or the repository.
+
+Only the immutable GitHub user ID `130329660` (KaremEhab) is authorized, checked
+against GitHub on every management request. Sign in with a fine-grained GitHub
+personal access token restricted to this repository with Contents: read and write.
+There is no public signup and no management link on the storefront. Unauthorized
+visitors receive a sign-in screen, never product management data or controls.
+
+Vercel requires `OWNER_SESSION_KEY`: a server-only random 32-byte hex encryption key.
+Never commit it or use a public/client environment variable for it. Owner tokens are
+encrypted in an authenticated AES-GCM session cookie, with Secure, HttpOnly,
+SameSite=Strict, an 8-hour expiration, and no client-side token storage. Revoking the
+GitHub token blocks subsequent requests. Rotating the key invalidates all sessions.
+Mutations require the exact production Origin, and catalog writes use SHA concurrency
+checks to avoid overwriting another tab's changes. Owner responses are never cached,
+are marked noindex, and cannot be embedded in another site.
+
+The repository is public: source code and published catalog data are public. This does
+not confer owner permissions. The production owner route is not indexed or advertised;
+its URL alone is not a credential. Direct API calls enforce the same owner checks.
+
+`npm test` runs the security and persistence regression suite. A static-only host
+(such as GitHub Pages) can serve the catalog but cannot run the owner API.
+
+The original project overview above describes the initial 10-product catalog. Product
+count, names and prices are now editable and are no longer constrained to that initial
+catalog. GitHub Contents API and Git integration are the durable storage/publication
+path; no additional database subscription is needed.
