@@ -13,15 +13,12 @@
   const escapeHTML = value => String(value ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;", "'":"&#39;"}[c]));
 
   const state = {
-    activeCategory: "all",
     selectedBag: null,
     lastFocusedElement: null
   };
 
   const dom = {
-    filterContainer: document.getElementById("filterTabs"),
     productsGrid: document.getElementById("productsGrid"),
-    catalogCount: document.getElementById("catalogCount"),
     modalBackdrop: document.getElementById("detailModalBackdrop"),
     modalCloseBtn: document.getElementById("modalCloseBtn"),
     modalImage: document.getElementById("modalImage"),
@@ -67,83 +64,23 @@
   }
 
   /* ==========================================================================
-     3. Category Filter Rendering & Logic
-     ========================================================================== */
-
-  /**
-   * Counts items matching a category identifier.
-   * @param {string} categoryId
-   * @returns {number}
-   */
-  function getCategoryCount(categoryId) {
-    if (categoryId === "all") {
-      return BAGS_DATA.length;
-    }
-    return BAGS_DATA.filter((item) => item.category === categoryId).length;
-  }
-
-  /**
-   * Renders the Apple-style segmented filter tabs.
-   */
-  function renderFilterTabs() {
-    if (!dom.filterContainer) return;
-
-    dom.filterContainer.innerHTML = STORE_CONFIG.categories
-      .map((cat) => {
-        const isActive = state.activeCategory === cat.id;
-        const count = getCategoryCount(cat.id);
-        return `
-          <button
-            type="button"
-            class="filter-tab ${isActive ? "is-active" : ""}"
-            role="tab"
-            aria-selected="${isActive}"
-            tabindex="${isActive ? 0 : -1}"
-            aria-controls="productsGrid"
-            id="filter-${STORE_CONFIG.categories.indexOf(cat)}"
-            data-category="${cat.id}"
-          >
-            <span>${cat.label}</span>
-            <span class="filter-tab__count">${count}</span>
-          </button>
-        `;
-      })
-      .join("");
-  }
-
-  /**
-   * Filters BAGS_DATA based on activeCategory.
-   * @returns {Array}
-   */
-  function getFilteredBags() {
-    if (state.activeCategory === "all") {
-      return BAGS_DATA;
-    }
-    return BAGS_DATA.filter((bag) => bag.category === state.activeCategory);
-  }
-
-  /* ==========================================================================
      4. Product Gallery Grid Rendering
      ========================================================================== */
 
   /**
-   * Renders the filtered product cards into the grid.
+   * Renders all product cards into the grid.
    */
   function renderProductsGrid() {
     if (!dom.productsGrid) return;
 
-    const filteredBags = getFilteredBags();
+    const bags = BAGS_DATA;
 
-    if (dom.catalogCount) {
-      dom.catalogCount.textContent = `عرض ${filteredBags.length} من أصل ${BAGS_DATA.length} موديلات حرفية`;
-    }
 
-    dom.productsGrid.setAttribute("aria-labelledby", `filter-${STORE_CONFIG.categories.findIndex(cat => cat.id === state.activeCategory)}`);
-    if (!filteredBags.length) {
-      dom.productsGrid.innerHTML = "<p>لا توجد منتجات في هذا القسم حالياً.</p>";
+    if (!bags.length) {
+      dom.productsGrid.innerHTML = "<p>لا توجد منتجات حالياً.</p>";
       return;
     }
-    dom.productsGrid.innerHTML = filteredBags
+    dom.productsGrid.innerHTML = bags
       .map((bag) => {
         const whatsappUrl = buildWhatsAppOrderUrl(bag);
         return `
@@ -293,36 +230,6 @@
      ========================================================================== */
 
   function bindEvents() {
-    // Filter tab click delegation
-    if (dom.filterContainer) {
-      dom.filterContainer.addEventListener("click", (event) => {
-        const tabBtn = event.target.closest("[data-category]");
-        if (!tabBtn) return;
-
-        const chosenCategory = tabBtn.getAttribute("data-category");
-        if (chosenCategory === state.activeCategory) return;
-
-        state.activeCategory = chosenCategory;
-        renderFilterTabs();
-        renderProductsGrid();
-        dom.filterContainer.querySelector(`[data-category="${chosenCategory}"]`).focus();
-      });
-      dom.filterContainer.addEventListener("keydown", event => {
-        const current = STORE_CONFIG.categories.findIndex(cat => cat.id === state.activeCategory);
-        let next = current;
-        if (event.key === "ArrowLeft") next = (current + 1) % STORE_CONFIG.categories.length;
-        else if (event.key === "ArrowRight") next = (current - 1 + STORE_CONFIG.categories.length) % STORE_CONFIG.categories.length;
-        else if (event.key === "Home") next = 0;
-        else if (event.key === "End") next = STORE_CONFIG.categories.length - 1;
-        else return;
-        event.preventDefault();
-        state.activeCategory = STORE_CONFIG.categories[next].id;
-        renderFilterTabs();
-        renderProductsGrid();
-        dom.filterContainer.querySelectorAll("[role=tab]")[next].focus();
-      });
-    }
-
     // Product card preview delegation (mouse click)
     if (dom.productsGrid) {
       dom.productsGrid.addEventListener("click", (event) => {
@@ -388,10 +295,8 @@
       const response = await fetch("/products.json", { cache: "no-cache" });
       if (!response.ok) throw new Error("Catalog unavailable");
       BAGS_DATA = await response.json();
-      renderFilterTabs();
       renderProductsGrid();
     } catch {
-      if (dom.catalogCount) dom.catalogCount.textContent = "";
       dom.productsGrid.replaceChildren();
       const message = document.createElement("p");
       message.textContent = "تعذر تحميل المنتجات. حاول مرة أخرى.";
