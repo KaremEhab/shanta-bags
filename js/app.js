@@ -26,7 +26,6 @@
     modalCategory: document.getElementById("modalCategory"),
     modalCode: document.getElementById("modalCode"),
     modalTitle: document.getElementById("modalTitle"),
-    modalPrice: document.getElementById("modalPrice"),
     modalDesc: document.getElementById("modalDesc"),
     modalHighlights: document.getElementById("modalHighlights"),
     modalColorSwatch: document.getElementById("modalColorSwatch"),
@@ -175,13 +174,16 @@
     dom.modalImage.alt = `${bag.code} — صورة ${state.galleryIndex + 1} من ${images.length}`;
     const controls = document.getElementById("galleryControls");
     controls.hidden = images.length < 2;
+    document.getElementById("galleryNav").hidden = images.length < 2;
     document.getElementById("galleryCount").textContent = `${state.galleryIndex + 1} / ${images.length}`;
     const thumbnails = document.getElementById("galleryThumbnails");
+    if (thumbnails.dataset.product !== String(bag.id)) {
     thumbnails.replaceChildren();
+    thumbnails.dataset.product = String(bag.id);
     images.forEach((src, index) => {
       const button = document.createElement("button");
       button.type = "button";
-      button.setAttribute("aria-label", `عرض الصورة ${index + 1}`);
+      button.setAttribute("aria-label", /-06\.webp$/.test(src) ? `عرض إطلالة ${bag.code} على الموديل` : `عرض صورة ${index + 1} لحقيبة ${bag.code}`);
       button.setAttribute("aria-pressed", String(index === state.galleryIndex));
       const img = document.createElement("img");
       img.src = src; img.alt = ""; img.loading = "lazy";
@@ -189,6 +191,9 @@
       button.addEventListener("click", () => { state.galleryIndex = index; renderGallery(); document.getElementById("galleryThumbnails").children[index].focus(); });
       thumbnails.append(button);
     });
+    }
+    [...thumbnails.children].forEach((button,index) => button.setAttribute("aria-pressed", String(index === state.galleryIndex)));
+    thumbnails.children[state.galleryIndex]?.scrollIntoView({ block: "nearest", inline: "nearest" });
   }
 
   function moveGallery(offset) {
@@ -209,21 +214,31 @@
     state.galleryIndex = 0;
     renderGallery();
 
-    dom.modalCategory.textContent = productPurposes(bag).join(" · ");
+    dom.modalCategory.innerHTML = productPurposes(bag).map(purpose => `<span class="modal__purpose-tag">${escapeHTML(purpose)}</span>`).join("");
     dom.modalCode.textContent = bag.codeBadge;
     dom.modalTitle.textContent = bag.code;
-    dom.modalPrice.textContent = bag.priceFormatted;
     document.getElementById("modalFooterPrice").textContent = bag.priceFormatted;
     dom.modalDesc.textContent = bag.shortDescription;
 
     dom.modalColorSwatch.style.backgroundColor = bag.colorHex;
     dom.modalColorText.textContent = bag.color;
-    dom.modalDimensions.textContent = bag.specs.dimensions;
-    dom.modalYarnType.textContent = bag.specs.yarnType;
-    dom.modalHardware.textContent = bag.specs.hardware;
-    dom.modalLining.textContent = [bag.specs.lining, bag.specs.craftingHours].filter(Boolean).join(" — ");
+    // Unknown specifications are omitted instead of repeating placeholder rows.
+    const specs = bag.specs || {};
+    function specification(element, value) {
+      const clean = String(value || "").trim();
+      const plain = clean.replace(/[\u064B-\u065F\u0670]/g, "");
+      const unknown = !plain || /^(?:تؤكد|تحدد|يؤكد|يحدد)?\s*(?:عند الطلب|لاحقا|غير محدد|غير متاح)$/.test(plain);
+      element.textContent = unknown ? "" : clean;
+      element.closest(".spec-item").hidden = unknown;
+    }
+    specification(dom.modalDimensions, specs.dimensions);
+    specification(dom.modalYarnType, specs.yarnType);
+    specification(dom.modalHardware, specs.hardware);
+    specification(dom.modalLining, specs.lining);
+    specification(document.getElementById("modalCrafting"), specs.craftingHours);
+    document.getElementById("modalInquiryBtn").href = `https://wa.me/${STORE_CONFIG.whatsappNumber}?text=${encodeURIComponent(`مرحباً شنطة، أود الاستفسار عن حقيبة ${bag.code} (${bag.codeBadge}): المقاس والتوافر وتفاصيل التوصيل.`)}`;
 
-    dom.modalHighlights.innerHTML = bag.highlights
+    dom.modalHighlights.innerHTML = (bag.highlights || [])
       .map((chip) => `<span class="highlight-chip">${escapeHTML(chip)}</span>`)
       .join("");
 
@@ -236,8 +251,9 @@
     document.body.classList.add("modal-open");
     [document.querySelector("header"), document.querySelector("main"), document.querySelector("footer")].forEach(el => { if (el) el.inert = true; });
 
+    document.querySelector(".modal__scroll").scrollTop = 0;
     if (dom.modalCloseBtn) {
-      dom.modalCloseBtn.focus();
+      dom.modalCloseBtn.focus({ preventScroll: true });
     }
   }
 

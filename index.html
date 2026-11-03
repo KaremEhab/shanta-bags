@@ -184,63 +184,35 @@
         </svg>
       </button>
 
-      <!-- Bag Preview Column -->
-      <div class="modal__media">
-        <img id="modalImage" src="" alt="" class="modal__img" width="1254" height="1254" />
-        <div id="galleryControls" class="gallery-controls" hidden>
-          <div class="gallery-controls__nav"><button type="button" id="galleryPrev" aria-label="الصورة السابقة">→</button><span id="galleryCount" aria-live="polite"></span><button type="button" id="galleryNext" aria-label="الصورة التالية">←</button></div>
-          <div id="galleryThumbnails" class="gallery-thumbnails" role="group" aria-label="صور المنتج"></div>
+      <div class="modal__scroll">
+      <div class="modal__media" aria-label="صور الحقيبة">
+        <div class="gallery-stage">
+          <img id="modalImage" src="" alt="" class="modal__img" width="1254" height="1254" />
+          <div id="galleryNav" class="gallery-controls__nav"><button type="button" id="galleryPrev" aria-label="الصورة السابقة">→</button><span id="galleryCount" aria-live="polite"></span><button type="button" id="galleryNext" aria-label="الصورة التالية">←</button></div>
         </div>
+        <div id="galleryControls" class="gallery-controls" hidden><div id="galleryThumbnails" class="gallery-thumbnails" role="group" aria-label="اختاري صورة الحقيبة"></div></div>
       </div>
-
-      <!-- Technical Specifications & Sticky Order Column -->
       <div class="modal__content">
         <div class="modal__body">
-          <div class="modal__meta">
-            <span id="modalCategory" class="modal__category-pill"></span>
-            <span id="modalCode" class="modal__code-pill"></span>
-          </div>
-
-          <div class="modal__title-row">
-            <h2 id="modalTitle" class="modal__title"></h2>
-            <span id="modalPrice" class="modal__price"></span>
-          </div>
-
+          <span class="modal__eyebrow">من مجموعة شنطة</span>
+          <div class="modal__title-row"><h2 id="modalTitle" class="modal__title"></h2><span id="modalCode" class="modal__code-pill"></span></div>
+          <div class="modal__color"><span id="modalColorSwatch" class="color-swatch"></span><span id="modalColorText"></span></div>
           <p id="modalDesc" class="modal__desc"></p>
-
-          <div id="modalHighlights" class="modal__highlights"></div>
-
-          <div class="specs-list" role="list" aria-label="المواصفات الفنية للحقيبة">
-            <div class="spec-item" role="listitem">
-              <span class="spec-item__label">اللون والدرجة</span>
-              <div class="spec-item__value">
-                <span id="modalColorSwatch" class="color-swatch"></span>
-                <span id="modalColorText"></span>
-              </div>
-            </div>
-
-            <div class="spec-item" role="listitem">
-              <span class="spec-item__label">الأبعاد الهندسية</span>
-              <span id="modalDimensions" class="spec-item__value"></span>
-            </div>
-
-            <div class="spec-item" role="listitem">
-              <span class="spec-item__label">نوع الخيوط والحياكة</span>
-              <span id="modalYarnType" class="spec-item__value"></span>
-            </div>
-
-            <div class="spec-item" role="listitem">
-              <span class="spec-item__label">الإكسسوارات المعدنية المطروقة</span>
-              <span id="modalHardware" class="spec-item__value"></span>
-            </div>
-
-            <div class="spec-item" role="listitem">
-              <span class="spec-item__label">التبطين الداخلي وزمن الحياكة</span>
-              <span id="modalLining" class="spec-item__value"></span>
-            </div>
-          </div>
+          <section class="modal__purposes" aria-label="مناسبة للاستخدام في"><h3>تليق بإطلالتك في</h3><div id="modalCategory" class="modal__purpose-tags"></div></section>
+          <section class="modal__design" aria-labelledby="designHeading"><h3 id="designHeading">تفاصيل تحبّيها</h3><div id="modalHighlights" class="modal__highlights"></div>
+            <details class="modal__specs"><summary>الحياكة والمواصفات<span aria-hidden="true">+</span></summary><dl class="specs-list" aria-label="تفاصيل الحقيبة">
+              <div class="spec-item"><dt class="spec-item__label">الحياكة</dt><dd id="modalYarnType" class="spec-item__value"></dd></div>
+              <div class="spec-item"><dt class="spec-item__label">القفل والإكسسوارات</dt><dd id="modalHardware" class="spec-item__value"></dd></div>
+              <div class="spec-item"><dt class="spec-item__label">المقاس</dt><dd id="modalDimensions" class="spec-item__value"></dd></div>
+              <div class="spec-item"><dt class="spec-item__label">البطانة</dt><dd id="modalLining" class="spec-item__value"></dd></div>
+              <div class="spec-item"><dt class="spec-item__label">وقت الصناعة</dt><dd id="modalCrafting" class="spec-item__value"></dd></div>
+            </dl></details>
+          </section>
+          <details class="modal__care"><summary>العناية بحقيبتك<span aria-hidden="true">+</span></summary><p>احفظيها في مكان جاف بعيدًا عن الشمس المباشرة. استخدمي قطعة قماش ناعمة وجافة للتنظيف، وتجنّبي شدّ الخيوط أو تحميل الحقيبة بأوزان زائدة.</p></details>
+          <div class="modal__enquiry"><span class="modal__enquiry-icon" aria-hidden="true">↗</span><div><strong>حبيتيها؟ خلّينا نساعدك.</strong><p>اسألي عن المقاس والتوافر وتفاصيل التوصيل قبل تأكيد طلبك.</p><a id="modalInquiryBtn" href="#" target="_blank" rel="noopener noreferrer">اسألي عن الحقيبة على واتساب ←</a></div></div>
         </div>
-
+      </div>
+      </div>
         <!-- Sticky WhatsApp Order Trigger -->
         <div class="modal__footer">
           <div class="modal__footer-price">
@@ -258,10 +230,9 @@
             <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
               <path d="M12.031 2C6.508 2 2.023 6.485 2.023 12.008c0 1.766.461 3.49 1.337 5.012L2 22l5.122-1.343a9.972 9.972 0 0 0 4.909 1.294h.004c5.522 0 10.007-4.485 10.007-10.008C22.042 6.485 17.554 2 12.031 2Zm5.828 14.129c-.246.695-1.432 1.33-2.006 1.414-.537.079-1.216.112-1.964-.125-.454-.144-1.037-.338-1.784-.661-3.14-1.356-5.19-4.517-5.347-4.726-.157-.209-1.277-1.699-1.277-3.241 0-1.542.808-2.3 1.095-2.613.287-.313.626-.391.835-.391.209 0 .417.002.599.011.192.009.45-.073.704.538.261.627.887 2.169.965 2.326.078.157.13.34.026.549-.104.209-.157.34-.313.522-.157.183-.329.408-.47.549-.157.156-.32.326-.138.64.183.313.812 1.34 1.744 2.171 1.199 1.069 2.21 1.4 2.523 1.557.313.157.496.13.679-.078.183-.209.782-.914.991-1.227.209-.313.417-.261.704-.157.287.104 1.825.861 2.138 1.018.313.157.522.235.599.365.078.131.078.757-.168 1.452Z"/>
             </svg>
-            <span>اطلب عبر واتساب</span>
+            <span>اطلبي عبر واتساب</span>
           </a>
         </div>
-      </div>
     </div>
   </div>
 
