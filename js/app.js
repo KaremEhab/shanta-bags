@@ -14,6 +14,7 @@
 
   const state = {
     selectedBag: null,
+    selectedSize: "M",
     galleryIndex: 0,
     lastFocusedElement: null
   };
@@ -48,8 +49,11 @@
    * @param {Object} bag - Bag item from BAGS_DATA
    * @returns {string} Complete WhatsApp wa.me URL
    */
-  function buildWhatsAppOrderUrl(bag) {
-    const rawMessage = `مرحباً شنطة، أود طلب: ${bag.code} | اللون: ${bag.color} | السعر: ${bag.price} ج.م`;
+  const BAG_SIZES = { S: "صغير", M: "متوسط", L: "كبير" };
+
+  function buildWhatsAppOrderUrl(bag, size) {
+    const sizeText = BAG_SIZES[size] ? ` | المقاس: ${BAG_SIZES[size]} (${size})` : "";
+    const rawMessage = `مرحباً شنطة، أود طلب: ${bag.code}${sizeText} | اللون: ${bag.color} | السعر: ${bag.price} ج.م`;
     const encodedMessage = encodeURIComponent(rawMessage);
     return `https://wa.me/${STORE_CONFIG.whatsappNumber}?text=${encodedMessage}`;
   }
@@ -203,6 +207,16 @@
     renderGallery();
   }
 
+  function selectBagSize(size) {
+    if (!BAG_SIZES[size] || !state.selectedBag) return;
+    state.selectedSize = size;
+    const bag = state.selectedBag;
+    document.querySelectorAll("input[name='bagSize']").forEach(input => { input.checked = input.value === size; });
+    document.getElementById("modalSizeSummary").textContent = `السعر · ${BAG_SIZES[size]} ${size}`;
+    dom.modalOrderBtn.href = buildWhatsAppOrderUrl(bag, size);
+    document.getElementById("modalInquiryBtn").href = `https://wa.me/${STORE_CONFIG.whatsappNumber}?text=${encodeURIComponent(`مرحباً شنطة، أود الاستفسار عن حقيبة ${bag.code} (${bag.codeBadge})، مقاس ${BAG_SIZES[size]} (${size}): الأبعاد بالسنتيمتر والتوافر وتفاصيل التوصيل.`)}`;
+  }
+
   function openDetailModal(bagId) {
     const bag = BAGS_DATA.find((item) => item.id === Number(bagId));
     if (!bag || !dom.modalBackdrop) return;
@@ -236,14 +250,13 @@
     specification(dom.modalHardware, specs.hardware);
     specification(dom.modalLining, specs.lining);
     specification(document.getElementById("modalCrafting"), specs.craftingHours);
-    document.getElementById("modalInquiryBtn").href = `https://wa.me/${STORE_CONFIG.whatsappNumber}?text=${encodeURIComponent(`مرحباً شنطة، أود الاستفسار عن حقيبة ${bag.code} (${bag.codeBadge}): المقاس والتوافر وتفاصيل التوصيل.`)}`;
 
     dom.modalHighlights.innerHTML = (bag.highlights || [])
       .map((chip) => `<span class="highlight-chip">${escapeHTML(chip)}</span>`)
       .join("");
 
     // Bind WhatsApp order URL
-    dom.modalOrderBtn.href = buildWhatsAppOrderUrl(bag);
+    selectBagSize("M");
 
     // Reveal modal
     dom.modalBackdrop.classList.add("is-open");
@@ -279,6 +292,9 @@
      ========================================================================== */
 
   function bindEvents() {
+    document.querySelectorAll("input[name='bagSize']").forEach(input => {
+      input.addEventListener("change", () => { if (input.checked) selectBagSize(input.value); });
+    });
     document.getElementById("galleryPrev").addEventListener("click", () => moveGallery(-1));
     document.getElementById("galleryNext").addEventListener("click", () => moveGallery(1));
     let touchStart = null;
@@ -328,7 +344,7 @@
     // Trap keyboard focus inside the open detail sheet.
     dom.modalBackdrop?.addEventListener("keydown", event => {
       if (event.key !== "Tab" || !dom.modalBackdrop.classList.contains("is-open")) return;
-      const controls = [...dom.modalBackdrop.querySelectorAll("button, a[href], [tabindex=\"0\"]")].filter(el => !el.disabled);
+      const controls = [...dom.modalBackdrop.querySelectorAll("button, a[href], input:checked, summary, [tabindex=\"0\"]")].filter(el => !el.disabled);
       const first = controls[0], last = controls[controls.length - 1];
       if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
       else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }

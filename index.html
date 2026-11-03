@@ -198,6 +198,7 @@
           <div class="modal__title-row"><h2 id="modalTitle" class="modal__title"></h2><span id="modalCode" class="modal__code-pill"></span></div>
           <div class="modal__color"><span id="modalColorSwatch" class="color-swatch"></span><span id="modalColorText"></span></div>
           <p id="modalDesc" class="modal__desc"></p>
+          <fieldset class="size-selector" aria-describedby="sizeNote"><legend>اختاري المقاس</legend><div class="size-options"><label class="size-option"><input type="radio" name="bagSize" value="S"><span class="size-tile"><span class="size-bag size-bag--s"><svg viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="5" y="12" width="26" height="20" rx="5"/><path d="M12 12V9a6 6 0 0 1 12 0v3M5 19h26"/><rect x="15" y="17" width="6" height="5" rx="1"/></svg></span><strong>صغير</strong><span class="size-letter" lang="en">Small · S</span></span></label><label class="size-option"><input type="radio" name="bagSize" value="M" checked><span class="size-tile"><span class="size-bag size-bag--m"><svg viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="5" y="12" width="26" height="20" rx="5"/><path d="M12 12V9a6 6 0 0 1 12 0v3M5 19h26"/><rect x="15" y="17" width="6" height="5" rx="1"/></svg></span><strong>متوسط</strong><span class="size-letter" lang="en">Medium · M</span></span></label><label class="size-option"><input type="radio" name="bagSize" value="L"><span class="size-tile"><span class="size-bag size-bag--l"><svg viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="5" y="12" width="26" height="20" rx="5"/><path d="M12 12V9a6 6 0 0 1 12 0v3M5 19h26"/><rect x="15" y="17" width="6" height="5" rx="1"/></svg></span><strong>كبير</strong><span class="size-letter" lang="en">Large · L</span></span></label></div><p id="sizeNote">اسألي عن أبعاد المقاس بالسنتيمتر عبر واتساب.</p></fieldset>
           <section class="modal__purposes" aria-label="مناسبة للاستخدام في"><h3>تليق بإطلالتك في</h3><div id="modalCategory" class="modal__purpose-tags"></div></section>
           <section class="modal__design" aria-labelledby="designHeading"><h3 id="designHeading">تفاصيل تحبّيها</h3><div id="modalHighlights" class="modal__highlights"></div>
             <details class="modal__specs"><summary>الحياكة والمواصفات<span aria-hidden="true">+</span></summary><dl class="specs-list" aria-label="تفاصيل الحقيبة">
@@ -216,7 +217,7 @@
         <!-- Sticky WhatsApp Order Trigger -->
         <div class="modal__footer">
           <div class="modal__footer-price">
-            <span class="modal__footer-label">السعر</span>
+            <span class="modal__footer-label" id="modalSizeSummary">السعر · متوسط M</span>
             <span class="modal__footer-amount" id="modalFooterPrice"></span>
           </div>
 
